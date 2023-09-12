@@ -6,7 +6,7 @@ import traceback
 class Logger():
 
     def __set_logger(self):
-        log_directory = 'src/utils/log'
+        log_directory = 'utils/log'
         log_filename = 'app.log'
 
         logger = logging.getLogger(__name__)

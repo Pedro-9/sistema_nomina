@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<section class="panel">
+    <ul>
+        <li><a href="#">Empresa</a></li>
+        <li><a href="#">Empleado</a></li>
+        <li><a href="#">Usuarios</a></li>
+        <li><a href="#">Roles</a></li>
+    </ul>
+</section>
+
+<section class="form">
+    <table id="miTabla">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>USUARIO</th>
+                <th>FECHA REGISTRO</th>
+                <th>FECHA MODIFICACION</th>
+                <th>ROL</th>
+                <th>EMPRESA</th>
+                <th>ESTADO</th>
+
+            </tr>
+        </thead>
+        <tbody id="data">
+            <!-- Aquí se insertarán los registros dinámicamente -->
+        </tbody>
+    </table>
+</section>
+<script src="static/js/script.js"></script>
+
+{% endblock %}

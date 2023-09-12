@@ -6,7 +6,7 @@ import pytz
 import traceback
 
 # Logger
-from src.utils.Logger import Logger
+from utils.Logger import Logger
 
 
 class Security():
