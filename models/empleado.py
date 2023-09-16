@@ -1,4 +1,3 @@
-from db.db_mysql import Mysql
 from datetime import datetime 
 import traceback
 from utils.Logger import Logger

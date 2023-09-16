@@ -7,7 +7,7 @@ myenv/
 __pycache__/
 
 # Archivos de configuración local
-.env/
+
 
 # Carpeta de dependencias
 lib/

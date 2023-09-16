@@ -5,7 +5,7 @@ body {
     color: #1b262c;
     
     margin: 0;
-    background-color: #0f4c75;
+    background-color: #204A8A;
 }
 
 #contenedor {
@@ -33,10 +33,18 @@ body {
     margin-bottom: 20px;
 }
 
+.mensaje{
+    font-size: 150%;
+    color:#bbe1fa;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
 #login {
     width: 100%;
     padding: 50px 30px;
-    background-color: #3282b8;
+    background-color: #2a70da;
     
     -webkit-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.15);
     -moz-box-shadow: 0px 0px 5px 5px rgba(0,0,0,0.15);

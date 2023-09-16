@@ -9,6 +9,9 @@ class Logger():
         log_directory = 'utils/log'
         log_filename = 'app.log'
 
+        if not os.path.exists(log_directory):
+            os.mkdir(log_directory)
+
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)
 
