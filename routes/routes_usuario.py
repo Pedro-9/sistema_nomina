@@ -1,25 +1,22 @@
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
+from flask_login import login_user, login_required, logout_user
 from models.usuario import Usuario
 from utils.Logger import Logger
 
-# objeto del controlador usuario
+# Objeto del controlador usuario
+# ------------------------------
 user = Usuario()
 
 usuario = Blueprint('usuario', __name__, template_folder='templates')
 
+# Ruta principal 
+# --------------
 @usuario.route('/')
 def index_login():
     return render_template('login.html')
 
-
-@usuario.route('/show_users')
-def mostrar_usuarios():
-     return render_template('usuarios.html')
-
-@usuario.route('/dashboard')
-def dashboard():
-    return render_template("dashboard_admin.html")
-
+# Ruta para el inicio de sesion
+# -----------------------------
 @usuario.route('/login', methods=['POST'])
 def login():
     if request.method == 'POST':
@@ -27,19 +24,49 @@ def login():
         var_usuario = request.form['usuario']
         password = request.form['password']
         try:
-            usuario = user.validar_usuario(var_usuario, id_empresa, password)
-            if usuario != None:
-                Logger.add_to_log("info",f"usuario existente id_empresa:{id_empresa} usuario: {var_usuario}")
-                return redirect(url_for('usuario.dashboard'))
+
+            logged_user = user.validar_usuario(var_usuario, id_empresa, password)
+            if logged_user != None:
+                if logged_user.password:
+                    login_user(logged_user)
+                    return redirect(url_for('usuario.dashboard'))
+                else:
+                    flash('Usuario incorrecto')
+                    return redirect(url_for('usuario.index_login'))
             else:
-                flash('Usuario incorrecto')
+                flash('Usuario no existe')
                 Logger.add_to_log("info","usuario no existe")
                 return redirect(url_for('usuario.index_login'))
+
         except Exception as e:
             return redirect(url_for('usuario.index_login'))
 
+# Ruta para cerrar sesion del navegador
+# -------------------------------------
+@usuario.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('usuario.index_login'))
 
+# Ruta para llamar al template usuarios
+# --------------------------------------
+@usuario.route('/show_users')
+@login_required
+def mostrar_usuarios():
+     return render_template('usuarios.html')
+
+# Ruta para mostrar dashboard de administrador
+# --------------------------------------------
+@usuario.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template("dashboard_admin.html")
+
+# Ruta para obtener todos los usuarios
+# ------------------------------------
 @usuario.route('/usuarios')
+@login_required
 def getUsuarios():
     usuarios = user.get_usuarios()
     if usuarios !=None:
@@ -47,8 +74,10 @@ def getUsuarios():
     else:
         return jsonify({"mensaje": "No existe usuarios"})
 
-
+# Ruta para obtener un usuario
+# ----------------------------
 @usuario.route('/usuarios/<string:id_usuario>')
+@login_required
 def getUsuario(id_usuario):
     usuario = user.get_usuario(id_usuario)
     if usuario!=None:
@@ -56,8 +85,10 @@ def getUsuario(id_usuario):
     else:
         return jsonify({"mensaje": "Usuario no existe"})
 
-
+# Ruta para insertar usuario nuevo
+# --------------------------------
 @usuario.route('/insert_usuario', methods=['POST'])
+@login_required
 def insertUsuario():
     if request.method == 'POST':
         var_usuario = request.json['usuario']
@@ -74,7 +105,10 @@ def insertUsuario():
         except Exception as e:
             return redirect(url_for('usuario.dashboard'))
 
+# Ruta para actualizar un usuario existente
+# -----------------------------------------
 @usuario.route('/update_usuario', methods=['POST'])
+@login_required
 def updateUsuario():
     if request.method == 'POST':
         var_usuario = request.json['usuario']
@@ -93,8 +127,10 @@ def updateUsuario():
         except Exception as e:
             return redirect(url_for('usuario.dashboard'))
     
-
+# Ruta para eliminar un usuario especifico
+# ----------------------------------------
 @usuario.route('/delete_usuario/<string:id>', methods=['POST', 'GET'])
+@login_required
 def deleteUsuario(id):
     try:
             response = user.delete_usuario(id,'1')

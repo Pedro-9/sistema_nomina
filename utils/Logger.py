@@ -11,6 +11,10 @@ class Logger():
 
         if not os.path.exists(log_directory):
             os.mkdir(log_directory)
+        
+        if not os.path.exists(log_directory+'/'+log_filename):
+            with open(log_directory+'/'+log_filename, 'w'):
+                print()
 
         logger = logging.getLogger(__name__)
         logger.setLevel(logging.DEBUG)

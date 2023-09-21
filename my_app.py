@@ -1,7 +1,7 @@
 from flask import Flask
 
-# Application initializations
+# Inicializar aplicacion
 app = Flask(__name__)
-
-# settings
+# Configuracion
 app.secret_key = "mysecretkey"
+
