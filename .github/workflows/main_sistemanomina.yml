@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'sistemanomina'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_EC88B72A1E7B49B295277C4EE2B27D48 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F6A5B423B9444D47B28AB23BFE7857EB }}
