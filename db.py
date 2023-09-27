@@ -13,5 +13,6 @@ app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
 app.config['MYSQL_DB'] = os.getenv('MYSQL_DB') 
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
+
 # MySQL Connection
 mysql = MySQL(app)

@@ -14,3 +14,13 @@ def getRoles():
         return jsonify({"roles": roles})
     else:
         return jsonify({"mensaje": "No existe roles"})
+    
+# Ruta para obtener una empresa
+# ----------------------------
+@roles.route('/roles/<string:id_rol>')
+def getEmpresa(id_rol):
+    row = rol.get_rol(id_rol)
+    if row!=None:
+        return jsonify({"roles": row})
+    else:
+        return jsonify({"mensaje": "No existe rol"})

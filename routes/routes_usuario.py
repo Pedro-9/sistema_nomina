@@ -1,11 +1,13 @@
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
 from flask_login import login_user, login_required, logout_user
 from models.usuario import Usuario
+from models.empresa import Empresa
 from utils.Logger import Logger
 
 # Objeto del controlador usuario
 # ------------------------------
 user = Usuario()
+emp = Empresa()
 
 usuario = Blueprint('usuario', __name__, template_folder='templates')
 
@@ -94,9 +96,11 @@ def insertUsuario():
         var_usuario = request.json['usuario']
         password = request.json['password']
         rol = request.json['rol']
+        empresa = request.json['empresa']
         try:
-            response = user.insert_usuario(var_usuario,password,rol)
+            response = user.insert_usuario(var_usuario,password,rol, empresa)
             if response == True:
+                emp.update_id_usuario(user.get_ultimo_id(), empresa)
                 Logger.add_to_log("info",f"Usuario agregado exitosamente -->{var_usuario}")
                 return jsonify({"mensaje": "Usuario agregado exitosamente"})
             elif response == False:
@@ -115,9 +119,10 @@ def updateUsuario():
         password = request.json['password']
         rol = request.json['rol']
         id = request.json['id']
+        id_empresa = request.json['empresa']
 
         try:
-            response = user.update_usuario(var_usuario,password, rol, id)
+            response = user.update_usuario(var_usuario,password, rol, id_empresa, id)
             if response == True:
                 Logger.add_to_log("info",f"Usuario actualizado exitosamente -->{var_usuario}")
                 return jsonify({"mensaje": "Usuario actualizado exitosamente"})
@@ -133,12 +138,12 @@ def updateUsuario():
 @login_required
 def deleteUsuario(id):
     try:
-            response = user.delete_usuario(id,'1')
-            if response == True:
-                Logger.add_to_log("info",f"Usuario eliminado exitosamente con id -->{id}")
-                return jsonify({"mensaje": "Usuario eliminado exitosamente"})
-            elif response == False:
-                Logger.add_to_log("info","Error al eliminar registro")
-                return jsonify({"mensaje": "Error al eliminar registro"})
+        response = user.delete_usuario(id,'1')
+        if response == True:
+            Logger.add_to_log("info",f"Usuario eliminado exitosamente con id -->{id}")
+            return jsonify({"mensaje": "Usuario eliminado exitosamente"})
+        elif response == False:
+            Logger.add_to_log("info","Error al eliminar registro")
+            return jsonify({"mensaje": "Error al eliminar registro"})
     except Exception as e:
         return redirect(url_for('usuario.dashboard'))

@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from models.usuario import Usuario
 from routes.routes_usuario import usuario
 from routes.routes_roles import roles
+from routes.routes_empresa import empresas
 
 
 login_manager_app = LoginManager(app)
@@ -16,6 +17,7 @@ def load_user(id):
 
 app.register_blueprint(usuario)
 app.register_blueprint(roles)
+app.register_blueprint(empresas)
 
 
 def status_401(error):
