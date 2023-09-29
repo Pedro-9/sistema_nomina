@@ -1,5 +1,5 @@
 from db import mysql
-from datetime import datetime 
+from datetime import datetime
 import traceback
 from utils.Logger import Logger
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -19,10 +19,9 @@ class User(UserMixin):
 
 
 class Usuario:
-    def __init__(self) :
+    def __init__(self):
         self.id_empresa = ''
         self.ultimo_id = ''
-        
 
     def getFecha(self):
         ahora = datetime.now()
@@ -41,12 +40,12 @@ class Usuario:
             Logger.add_to_log("error", str(err))
             Logger.add_to_log("error", traceback.format_exc())
             return None
-    
+
     @staticmethod
     def execute_commit(query, params=None):
         try:
             with mysql.connection.cursor() as cursor:
-                cursor.execute(query,params)
+                cursor.execute(query, params)
             mysql.connection.commit()
         except Exception as err:
             Logger.add_to_log("error", str(err))
@@ -63,7 +62,7 @@ class Usuario:
                                 usuario, password, f_registro,
                                 f_modificacion, estado, id_rol, id_empresa) 
                                 VALUES (%s, %s, %s, %s, %s, %s, %s)''',
-                                (usuario, password_hash, self.getFecha(), self.getFecha(), '0', id_rol, id_empresa))
+                                   (usuario, password_hash, self.getFecha(), self.getFecha(), '0', id_rol, id_empresa))
                 mysql.connection.commit()
                 self.ultimo_id = self.get_ultimo_id()
                 return True
@@ -74,7 +73,6 @@ class Usuario:
             print(err)
             Logger.add_to_log("error", str(err))
             Logger.add_to_log("error", traceback.format_exc())
-
 
     def get_usuarios(self):
         query = '''
@@ -89,40 +87,37 @@ class Usuario:
                 order by us.id_usuario desc'''
         params = ('0')
         return self.execute_query(query, params=params, fetchall=True)
-    
 
     def get_usuario(self, id_usuario):
-        
+
         query = '''
             SELECT * FROM usuarios WHERE id_usuario = %s
-            AND estado = %s''' 
-        params = (id_usuario,'0')
+            AND estado = %s'''
+        params = (id_usuario, '0')
         return self.execute_query(query, params=params)
-
 
     def existe_usuario(self, _usuario):
         query = '''
             SELECT * FROM usuarios WHERE usuario = %s 
-            AND estado = %s AND id_empresa = %s''' 
-        params = (_usuario,'0',self.id_empresa)
+            AND estado = %s AND id_empresa = %s'''
+        params = (_usuario, '0', self.id_empresa)
         return self.execute_query(query, params=params)
-       
-
 
     def validar_usuario(self, _usuario, id_empresa, password):
         self.id_empresa = id_empresa
-        
+
         query = '''
             SELECT id_usuario, usuario, password FROM usuarios WHERE usuario = %s 
-            AND estado = %s AND id_empresa = %s''' 
-        params =  (_usuario,'0',id_empresa)
+            AND estado = %s AND id_empresa = %s'''
+        params = (_usuario, '0', id_empresa)
         row = self.execute_query(query, params=params)
         if row != None:
-            user = User(row['id_usuario'], row['usuario'], User.check_password(row['password'], password))
+            user = User(row['id_usuario'], row['usuario'],
+                        User.check_password(row['password'], password))
             return user
         else:
             return None
-        
+
     def get_ultimo_id(self):
         query = '''
             SELECT id_usuario FROM usuarios ORDER BY id_usuario DESC LIMIT 1'''
@@ -131,7 +126,8 @@ class Usuario:
     def get_by_id(self, id):
         try:
             cursor = mysql.connection.cursor()
-            sql = "SELECT id_usuario, usuario FROM usuarios WHERE id_usuario = {}".format(id)
+            sql = "SELECT id_usuario, usuario FROM usuarios WHERE id_usuario = {}".format(
+                id)
             cursor.execute(sql)
             row = cursor.fetchone()
             if row != None:
@@ -144,7 +140,7 @@ class Usuario:
 
     def update_usuario(self, usuario, password, id_rol, id_empresa, id_usuario):
         try:
-            if len(password) < 50:
+            if len(password) < 100:
                 password_hash = generate_password_hash(password)
             else:
                 password_hash = password
@@ -154,7 +150,7 @@ class Usuario:
                                 SET usuario = %s, password = %s, f_modificacion = %s, 
                                 id_rol = %s, id_empresa = %s
                                 WHERE id_usuario = %s ''',
-                            (usuario, password_hash, self.getFecha(), id_rol, id_empresa, id_usuario))
+                               (usuario, password_hash, self.getFecha(), id_rol, id_empresa, id_usuario))
             mysql.connection.commit()
             return True
         except Exception as err:
@@ -162,20 +158,17 @@ class Usuario:
             Logger.add_to_log("error", traceback.format_exc())
             return False
 
-
-    def delete_usuario(self,id_usuario, estado):
+    def delete_usuario(self, id_usuario, estado):
         try:
             with mysql.connection.cursor() as cursor:
                 cursor.execute('''
                                 UPDATE usuarios 
                                 SET estado = %s, f_modificacion = %s
                                 WHERE id_usuario = %s''',
-                            (estado, self.getFecha(), id_usuario))
+                               (estado, self.getFecha(), id_usuario))
             mysql.connection.commit()
             return True
         except Exception as err:
             Logger.add_to_log("error", str(err))
             Logger.add_to_log("error", traceback.format_exc())
             return False
-    
-

@@ -4,10 +4,9 @@
 <script>
     window.onload = function () {
         get_empresas();
-        get_roles('selectRolEmpresa');
     };</script>
 
-<section class="form">
+<section class="form container-fluid">
     <button type="button" class="btns btn-primary" data-toggle="modal" data-target="#myModal">
         Agregar
     </button>
@@ -66,7 +65,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary" id="submitBtn"
-                        onclick="">Guardar</button>
+                        onclick="actualizar_empresa()">Guardar</button>
                 </div>
             </div>
         </div>
@@ -86,12 +85,12 @@
                 <th>ACCIONES</th>
             </tr>
         </thead>
-        <tbody id="data">
+        <tbody id="data_empresa">
             <!-- Aquí se insertarán los registros dinámicamente -->
         </tbody>
     </table>
-    <button class="btns" id="regresarEmpresa">Regresar</button>
-    <button class="btns" id="mostrarMasEmpresa">Mostrar Más</button>
+    <button class="btns" id="regresarEmpresa" onclick="regresarEmpresa()">Regresar</button>
+    <button class="btns" id="mostrarMasEmpresa" onclick="mostrarMasEmpresa()">Mostrar Más</button>
 
 </section>
 

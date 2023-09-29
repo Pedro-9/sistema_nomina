@@ -1,42 +1,22 @@
-
-
 let pagina = 1;
+let pagina_empresa = 1;
 const registrosPorPagina = 10;
+const row_empresa = 10;
+
 // Eventos botones para tabla dinamica usuarios
 // --------------------------------------------
-const mostrarMasBtn = document.getElementById('mostrarMasUsuarios');
-const regresarBtn = document.getElementById('regresarUsuarios');
 
-mostrarMasBtn.addEventListener('click', () => {
+function mostrarMasUsuarios(){
     pagina++;
     get_usuarios();
-});
+}
 
-regresarBtn.addEventListener('click', () => {
+function regresarUsuarios(){
     if (pagina > 1) {
         pagina--;
         get_usuarios();
     }
-});
-
-
-// Eventos botones para tabla dinamica empresas
-// --------------------------------------------
-const mostrarMasEmpresa = document.getElementById('mostrarMasEmpresa');
-const regresarEmpresa = document.getElementById('regresarEmpresa');
-
-mostrarMasEmpresa.addEventListener('click', () => {
-    pagina++;
-    get_empresas();
-});
-
-regresarEmpresa.addEventListener('click', () => {
-    if (pagina > 1) {
-        pagina--;
-        get_empresas();
-    }
-});
-
+}
 
 // --------------------------------------------------------
 // Funcion para obtener la lista de todos los usuarios
@@ -52,13 +32,16 @@ function get_usuarios() {
 // Funcion para mostrar datos de usuarios en tabla html
 // --------------------------------------------------------
 function mostrarDataUsuario(data) {
-    console.log(data)
+    //console.log(data)
     data = data.usuarios
     let body = ""
     const inicio = (pagina - 1) * registrosPorPagina;
     const fin = pagina * registrosPorPagina;
     for (let i = inicio; i < fin; i++) {
         if (i < data.length) {
+            if(data[i].estado === 0){
+                data[i].estado = '<span class="badge badge-success">Activo</span>'
+            }
             body += `<tr><td>${data[i].id_usuario}</td><td>${data[i].usuario}</td>
                             <td>${data[i].f_registro}</td><td>${data[i].f_modificacion}</td><td>${data[i].nombre_rol}</td>
                             <td>${data[i].nombre_empresa}</td><td>${data[i].estado}</td><td>
@@ -80,7 +63,7 @@ function get_roles(tipo_select) {
         .then(data => {
             const select = document.getElementById(type);
             select.innerHTML = ''; // Eliminar el mensaje de "Cargando roles..."
-            console.log(data)
+            //console.log(data)
             data = data.roles
             data.forEach(rol => {
                 const option = document.createElement('option');
@@ -120,7 +103,7 @@ function add_usuario() {
         .then((res) => res.json())
         .then((response) => {
             alert(response.mensaje);
-            console.log(response);
+            //console.log(response);
             resetForm('isertar_usuario'); // id de formulario como parametro
             location.reload(true);
         })
@@ -174,7 +157,7 @@ function actualizar_usuario() {
 
     // armar el body 
     const _body = { usuario: _usuario, password: _password, rol: _rol, id: _id, empresa: _empresa }
-    console.log(_body)
+    //console.log(_body)
     // Header por default
     const _header = { "Content-Type": "application/json" }
 
@@ -186,7 +169,7 @@ function actualizar_usuario() {
         .then((res) => res.json())
         .then((response) => {
             alert(response.mensaje);
-            console.log(response);
+            //console.log(response);
             resetForm('actualizar_usuario'); // id de formulario como parametro
             location.reload(true);
         })
@@ -203,7 +186,7 @@ function eliminar_usuario(id_usuario) {
             .then(res => res.json())
             .then(response => {
                 alert(response.mensaje);
-                console.log(response);
+                //console.log(response);
                 location.reload(true);
             })
             .catch(error => {
@@ -211,6 +194,22 @@ function eliminar_usuario(id_usuario) {
             });
     }
 }
+
+
+// Eventos botones para tabla dinamica empresa
+// --------------------------------------------
+function mostrarMasEmpresa(){
+    pagina_empresa++;
+    get_empresas();
+}
+
+function regresarEmpresa() {
+    if (pagina_empresa > 1) {
+        pagina_empresa--;
+        get_empresas();
+    }
+}
+
 
 
 // --------------------------------------------------------
@@ -227,13 +226,17 @@ function get_empresas() {
 // Funcion para mostrar datos de empresas en tabla html
 // --------------------------------------------------------
 function mostrarDataEmpresas(data) {
-    console.log(data)
+    //console.log(data)
     data = data.empresas
     let body = ""
-    const inicio = (pagina - 1) * registrosPorPagina;
-    const fin = pagina * registrosPorPagina;
+    const inicio = (pagina_empresa - 1) * row_empresa;
+    const fin = pagina_empresa * row_empresa;
     for (let i = inicio; i < fin; i++) {
         if (i < data.length) {
+            if (data[i].estado === 0){
+                data[i].estado = '<span class="badge badge-success">Activo</span>'
+            }
+
             body += `<tr><td>${data[i].id_empresa}</td><td>${data[i].nombre_empresa}</td>
                             <td>${data[i].fecha_ingreso}</td><td>${data[i].estado}</td>
                             <td>
@@ -241,7 +244,7 @@ function mostrarDataEmpresas(data) {
                             <button onclick="eliminar_empresa(${data[i].id_empresa})" class="btn btn-danger">Eliminar</button></td></tr>`
         }
     }
-    document.getElementById('data').innerHTML = body;
+    document.getElementById('data_empresa').innerHTML = body;
 }
 
 // --------------------------------------------------------
@@ -252,7 +255,7 @@ function editar_empresa(id_empresa) {
         .then(response => response.json())
         .then(data => {
             data = data.Empresa;
-            console.log(data)
+            //console.log(data)
             document.getElementById("id_empresa").value = data.id_empresa;
             document.getElementById("editEmpresa").value = data.nombre_empresa;
             $('#modal_editar_empresa').modal('show');
@@ -265,7 +268,7 @@ function editar_empresa(id_empresa) {
 // --------------------------------------------------------
 function add_empresa() {
     const _empresa = document.getElementById('nombre_empresa').value;
-   
+
 
     if (!_empresa) {
         alert("Por favor, complete todos los campos.");
@@ -286,7 +289,7 @@ function add_empresa() {
         .then((res) => res.json())
         .then((response) => {
             alert(response.mensaje);
-            console.log(response);
+            //console.log(response);
             resetForm('isertar_empresa'); // id de formulario como parametro
             location.reload(true);
         })
@@ -303,7 +306,7 @@ function get_select_empresas(tipo_select) {
         .then(data => {
             const select = document.getElementById(type);
             select.innerHTML = ''; // Eliminar el mensaje de "Cargando roles..."
-            console.log(data)
+            //console.log(data)
             data = data.empresas
             data.forEach(empresa => {
                 const option = document.createElement('option');
@@ -313,4 +316,59 @@ function get_select_empresas(tipo_select) {
             });
         })
         .catch(error => console.log(error))
+}
+
+
+// --------------------------------------------------------
+// Funcion para actualizar una empresa
+// --------------------------------------------------------
+function actualizar_empresa() {
+    const _id = document.getElementById('id_empresa').value;
+    const _empresa = document.getElementById('editEmpresa').value;
+
+
+    if (!_id || !_empresa) {
+        alert("Por favor, complete todos los campos.");
+        return;
+    }
+
+    // armar el body 
+    const _body = { id: _id, empresa: _empresa}
+    //console.log(_body)
+    // Header por default
+    const _header = { "Content-Type": "application/json" }
+
+    fetch('/update_empresa', {
+        method: "POST",
+        body: JSON.stringify(_body),
+        headers: _header
+    })
+        .then((res) => res.json())
+        .then((response) => {
+            alert(response.mensaje);
+            //console.log(response);
+            resetForm('actualizar_empresa'); // id de formulario como parametro
+            location.reload(true);
+        })
+        .catch((error) => console.error("Error", error))
+}
+
+
+// --------------------------------------------------------
+// Funcion para eliminar una empresa
+// --------------------------------------------------------
+function eliminar_empresa(id_empresa) {
+    if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
+        // Enviar solicitud para eliminar el registro
+        fetch('/delete_empresa/'+ id_empresa)
+            .then(res => res.json())
+            .then(response => {
+                alert(response.mensaje);
+                //console.log(response);
+                location.reload(true);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    }
 }

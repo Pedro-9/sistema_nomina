@@ -1,15 +1,12 @@
+from datetime import datetime
 from db import mysql
-from datetime import datetime 
+from datetime import datetime
 import traceback
 from utils.Logger import Logger
-from werkzeug.security import check_password_hash, generate_password_hash
-from flask_login import UserMixin
 from models.usuario import Usuario
 
 user = Usuario()
 
-from datetime import datetime
-import traceback
 
 class Empresa:
     def __init__(self):
@@ -33,19 +30,18 @@ class Empresa:
             Logger.add_to_log("error", str(err))
             Logger.add_to_log("error", traceback.format_exc())
             return None
-        
+
     @staticmethod
     def execute_commit(query, params=None):
         try:
             with mysql.connection.cursor() as cursor:
-                cursor.execute(query,params)
+                cursor.execute(query, params)
             mysql.connection.commit()
             return True
         except Exception as err:
             Logger.add_to_log("error", str(err))
             Logger.add_to_log("error", traceback.format_exc())
             return False
-        
 
     def insert_empresa(self, nombre_empresa):
         query = '''
@@ -55,7 +51,7 @@ class Empresa:
                     estado, id_usuario) VALUES (%s, %s, %s, %s)'''
         params = (nombre_empresa, self.get_fecha(), '0', '1')
         return self.execute_commit(query, params)
-        
+
     def get_empresas(self):
         query = 'SELECT * FROM empresas where estado = %s order by id_empresa desc'
         params = ('0')
@@ -78,7 +74,7 @@ class Empresa:
         '''
         params = (nombre_empresa, id_empresa)
         return self.execute_commit(query, params)
-    
+
     def update_id_usuario(self, id_usuario, id_empresa):
         query = '''
             UPDATE empresas
@@ -96,4 +92,3 @@ class Empresa:
         '''
         params = (estado, self.get_fecha(), id_empresa)
         return self.execute_commit(query, params)
-

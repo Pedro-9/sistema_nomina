@@ -129,7 +129,8 @@ def updateUsuario():
             elif response == False:
                 Logger.add_to_log("info","Usuario ya existe")
                 return jsonify({"mensaje": "Error al actualizar registro"})
-        except Exception as e:
+        except Exception as err:
+            Logger.add_to_log('error', err)
             return redirect(url_for('usuario.dashboard'))
     
 # Ruta para eliminar un usuario especifico
