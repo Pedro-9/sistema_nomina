@@ -44,8 +44,8 @@ function mostrarDataUsuario(data) {
             }
             body += `<tr><td>${data[i].id_usuario}</td><td>${data[i].usuario}</td>
                             <td>${data[i].f_registro}</td><td>${data[i].f_modificacion}</td><td>${data[i].nombre_rol}</td>
-                            <td>${data[i].nombre_empresa}</td><td>${data[i].estado}</td><td>
-                            <button onclick="editar_usuario(${data[i].id_usuario})" class="btn btn-success">Editar</button>
+                            <td>${data[i].id_empresa}</td><td>${data[i].nombre_empresa}</td><td>${data[i].estado}</td><td>
+                            <button onclick="editar_usuario(${data[i].id_usuario}, ${data[i].id_empresa}, ${data[i].id_rol})"class="btn btn-success">Editar</button>
                             <button onclick="eliminar_usuario(${data[i].id_usuario})" class="btn btn-danger">Eliminar</button></td></tr>`
         }
     }
@@ -56,7 +56,7 @@ function mostrarDataUsuario(data) {
 // --------------------------------------------------------
 // Funcion para mostrar lista de roles
 // --------------------------------------------------------
-function get_roles(tipo_select) {
+function get_roles(tipo_select, defaultRolId = null) {
     const type = tipo_select
     fetch('/roles', { method: 'GET' })
         .then(response => response.json())
@@ -69,6 +69,10 @@ function get_roles(tipo_select) {
                 const option = document.createElement('option');
                 option.value = rol.id_rol; // Asigna el valor que desees
                 option.textContent = rol.nombre_rol; // Asigna el texto que desees
+                // Establece el valor seleccionado si coincide con el valor por defecto proporcionado
+                if (defaultRolId && rol.id_rol === defaultRolId) {
+                    option.selected = true;
+                }
                 select.appendChild(option);
             });
         })
@@ -125,7 +129,7 @@ function resetForm(formulario) {
 // --------------------------------------------------------
 // Funcion para rellenar el formulario de editar usuario
 // --------------------------------------------------------
-function editar_usuario(id_usuario) {
+function editar_usuario(id_usuario, id_empresa, id_rol) {
     fetch('/usuarios/' + id_usuario, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
@@ -133,8 +137,8 @@ function editar_usuario(id_usuario) {
             document.getElementById("id_usuario").value = data.id_usuario;
             document.getElementById("editUsuario").value = data.usuario;
             document.getElementById("editPassword").value = data.password;
-            get_roles('selectEditRoles');
-            get_select_empresas('selectEditEmpresa');
+            get_roles('selectEditRoles', id_rol);
+            get_select_empresas('selectEditEmpresa', id_empresa);
             $('#modal_editar').modal('show');
         })
         .catch(error => console.log(error))
@@ -299,7 +303,7 @@ function add_empresa() {
 // --------------------------------------------------------
 // Funcion para mostrar lista de roles
 // --------------------------------------------------------
-function get_select_empresas(tipo_select) {
+function get_select_empresas(tipo_select, defaultIdEmpresa = null) {
     const type = tipo_select
     fetch('/empresas', { method: 'GET' })
         .then(response => response.json())
@@ -312,6 +316,12 @@ function get_select_empresas(tipo_select) {
                 const option = document.createElement('option');
                 option.value = empresa.id_empresa; // Asigna el valor que desees
                 option.textContent = empresa.nombre_empresa; // Asigna el texto que desees
+
+                // Establece el valor seleccionado si coincide con el valor por defecto proporcionado
+                if (defaultIdEmpresa && empresa.id_empresa === defaultIdEmpresa) {
+                    option.selected = true;
+                }
+
                 select.appendChild(option);
             });
         })

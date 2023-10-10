@@ -27,11 +27,16 @@ def login():
         password = request.form['password']
         try:
 
-            logged_user = user.validar_usuario(var_usuario, id_empresa, password)
+            logged_user, rol = user.validar_usuario(var_usuario, id_empresa, password)
             if logged_user != None:
                 if logged_user.password:
                     login_user(logged_user)
-                    return redirect(url_for('usuario.dashboard'))
+                    if rol == 1:
+                        return redirect(url_for('usuario.dashboardAdmin'))
+                    elif rol == 2:
+                        return redirect(url_for('usuario.dashboardEmpresa'))
+                    elif rol == 3:
+                        return redirect(url_for('usuario.dashboardEmpleado'))
                 else:
                     flash('Usuario incorrecto')
                     return redirect(url_for('usuario.index_login'))
@@ -56,14 +61,28 @@ def logout():
 @usuario.route('/show_users')
 @login_required
 def mostrar_usuarios():
-     return render_template('usuarios.html')
+     return render_template('panel/usuarios.html')
 
 # Ruta para mostrar dashboard de administrador
 # --------------------------------------------
 @usuario.route('/dashboard')
 @login_required
-def dashboard():
-    return render_template("dashboard_admin.html")
+def dashboardAdmin():
+    return render_template("dashboard/admin.html")
+
+# Ruta para mostrar dashboard de empresa
+# --------------------------------------------
+@usuario.route('/dashboard_empresa')
+@login_required
+def dashboardEmpresa():
+    return render_template("dashboard/empresa.html")
+
+# Ruta para mostrar dashboard de empleado
+# --------------------------------------------
+@usuario.route('/dashboard_empleado')
+@login_required
+def dashboardEmpleado():
+    return render_template("dashboard/empleado.html")
 
 # Ruta para obtener todos los usuarios
 # ------------------------------------
@@ -107,7 +126,7 @@ def insertUsuario():
                 Logger.add_to_log("info","Usuario ya existe")
                 return jsonify({"mensaje": "El usuario ya existe"})
         except Exception as e:
-            return redirect(url_for('usuario.dashboard'))
+            return redirect(url_for('usuario.dashboardAdmin'))
 
 # Ruta para actualizar un usuario existente
 # -----------------------------------------
@@ -131,7 +150,7 @@ def updateUsuario():
                 return jsonify({"mensaje": "Error al actualizar registro"})
         except Exception as err:
             Logger.add_to_log('error', err)
-            return redirect(url_for('usuario.dashboard'))
+            return redirect(url_for('usuario.dashboardAdmin'))
     
 # Ruta para eliminar un usuario especifico
 # ----------------------------------------
@@ -147,4 +166,4 @@ def deleteUsuario(id):
             Logger.add_to_log("info","Error al eliminar registro")
             return jsonify({"mensaje": "Error al eliminar registro"})
     except Exception as e:
-        return redirect(url_for('usuario.dashboard'))
+        return redirect(url_for('usuario.dashboardAdmin'))

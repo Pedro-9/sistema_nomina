@@ -22,12 +22,10 @@ def getEmpresas():
 @empresas.route('/show_companies')
 @login_required
 def mostrar_empresas():
-    return render_template('empresas.html')
+    return render_template('panel/empresas.html')
 
 # Ruta para obtener una empresa
 # ----------------------------
-
-
 @empresas.route('/empresa/<string:id_empresa>')
 @login_required
 def getEmpresa(id_empresa):
@@ -39,8 +37,6 @@ def getEmpresa(id_empresa):
 
 # Ruta para insetar nueva empresa
 # -------------------------------
-
-
 @empresas.route('/insert_empresa', methods=['POST'])
 @login_required
 def insertUsuario():

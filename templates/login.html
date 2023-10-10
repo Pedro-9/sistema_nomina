@@ -29,7 +29,7 @@
                 {% endwith %}
 
                 <form action="/login" method="POST" id="loginform">
-                    <input type="number" name="id_empresa" placeholder="Id empresa" required>
+                    <input type="number" name="id_empresa" placeholder="Id empresa" required min="1" max="9999">
                     <input type="text" name="usuario" placeholder="Usuario" required>
 
                     <input type="password" placeholder="Contraseña" name="password" required>

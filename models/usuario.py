@@ -75,9 +75,10 @@ class Usuario:
             Logger.add_to_log("error", traceback.format_exc())
 
     def get_usuarios(self):
+
         query = '''
                 SELECT us.id_usuario, us.usuario, us.password, us.f_registro, 
-                us.f_modificacion, rol.nombre_rol, em.nombre_empresa, us.estado
+                us.f_modificacion, us.id_rol, rol.nombre_rol, us.id_empresa, em.nombre_empresa, us.estado
                 FROM usuarios as us 
                 inner join empresas as em 
                 on us.id_empresa = em.id_empresa  
@@ -85,6 +86,7 @@ class Usuario:
                 on us.id_rol = rol.id_rol
                 WHERE us.estado = %s
                 order by us.id_usuario desc'''
+
         params = ('0')
         return self.execute_query(query, params=params, fetchall=True)
 
@@ -107,16 +109,16 @@ class Usuario:
         self.id_empresa = id_empresa
 
         query = '''
-            SELECT id_usuario, usuario, password FROM usuarios WHERE usuario = %s 
+            SELECT id_usuario, usuario, password, id_rol FROM usuarios WHERE usuario = %s 
             AND estado = %s AND id_empresa = %s'''
         params = (_usuario, '0', id_empresa)
         row = self.execute_query(query, params=params)
         if row != None:
             user = User(row['id_usuario'], row['usuario'],
                         User.check_password(row['password'], password))
-            return user
+            return user, row['id_rol']
         else:
-            return None
+            return None, None
 
     def get_ultimo_id(self):
         query = '''

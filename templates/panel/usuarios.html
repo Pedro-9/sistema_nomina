@@ -1,4 +1,4 @@
-{% extends "dashboard_admin.html" %}
+{% extends "dashboard/admin.html" %}
 {% block body %}
 
 <script>
@@ -97,7 +97,7 @@
 
     <input type="text" id="searchInput" placeholder="Buscar...">
     <ul id="results"></ul>
-    <table id="miTabla">
+    <table id="miTabla" class="miTabla">
         <thead>
             <tr>
                 <th>ID</th>
@@ -105,6 +105,7 @@
                 <th>FECHA REGISTRO</th>
                 <th>FECHA MODIFICACION</th>
                 <th>ROL</th>
+                <th>ID EMPRESA</th>
                 <th>EMPRESA</th>
                 <th>ESTADO</th>
                 <th>ACCIONES</th>
