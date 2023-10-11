@@ -1,10 +1,10 @@
-{% extends "dashboard/admin.html" %}
+{% extends "dashboard/empresa.html" %}
 {% block body %}
 
 <script>
     window.onload = function () {
-        get_usuarios();
-        get_roles_select('selectRoles');
+        get_usuarios_Empre();
+        get_roles('selectRoles');
         get_select_empresas('selectEmpresa');
     };</script>
 
@@ -95,7 +95,7 @@
     
     <label for="buscar">Buscar:</label>
 
-    <input type="text" id="searchInput" placeholder="Buscar..." onclick="Search()">
+    <input type="text" id="searchInput" placeholder="Buscar...">
     <ul id="results"></ul>
     <table id="miTabla" class="miTabla">
         <thead>

@@ -44,13 +44,23 @@ class Empresa:
             return False
 
     def insert_empresa(self, nombre_empresa):
+        if self.existe_empresa(nombre_empresa) == None:
+            query = '''
+                        INSERT INTO empresas (
+                        nombre_empresa,
+                        fecha_ingreso,
+                        estado, id_usuario) VALUES (%s, %s, %s, %s)'''
+            params = (nombre_empresa, self.get_fecha(), '0', '1')
+            return self.execute_commit(query, params)
+        else:
+            return False
+        
+    def existe_empresa(self, nombre_empresa):
         query = '''
-                    INSERT INTO empresas (
-                    nombre_empresa,
-                    fecha_ingreso,
-                    estado, id_usuario) VALUES (%s, %s, %s, %s)'''
-        params = (nombre_empresa, self.get_fecha(), '0', '1')
-        return self.execute_commit(query, params)
+            SELECT * FROM empresas WHERE nombre_empresa = %s 
+            AND estado = %s '''
+        params = (nombre_empresa, '0')
+        return self.execute_query(query, params=params)
 
     def get_empresas(self):
         query = 'SELECT * FROM empresas where estado = %s order by id_empresa desc'
@@ -92,3 +102,4 @@ class Empresa:
         '''
         params = (estado, self.get_fecha(), id_empresa)
         return self.execute_commit(query, params)
+

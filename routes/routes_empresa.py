@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify, render_template, request, redirect, url_for, flash
 from models.empresa import Empresa
+from models.usuario import Usuario
 from utils.Logger import Logger
 from flask_login import login_required
 
 # objeto del controlador usuario
 empresa = Empresa()
-
+user = Usuario()
 empresas = Blueprint('empresas', __name__, template_folder='templates')
 
 
@@ -17,7 +18,6 @@ def getEmpresas():
         return jsonify({"empresas": row})
     else:
         return jsonify({"mensaje": "No existe empresas"})
-
 
 @empresas.route('/show_companies')
 @login_required
@@ -39,17 +39,17 @@ def getEmpresa(id_empresa):
 # -------------------------------
 @empresas.route('/insert_empresa', methods=['POST'])
 @login_required
-def insertUsuario():
+def insertEmpresa():
     if request.method == 'POST':
         var_empresa = request.json['empresa']
         try:
             response = empresa.insert_empresa(var_empresa)
-            print(response)
+            
             if response:
                 Logger.add_to_log(
                     "info", f"Empresa agregado exitosamente -->{var_empresa}")
                 return jsonify({"mensaje": "Empresa agregado exitosamente"})
-            elif response == None:
+            else:
                 Logger.add_to_log("info", "Empresa ya existe")
                 return jsonify({"mensaje": "Empresa ya existe"})
         except Exception as e:
@@ -90,3 +90,17 @@ def deleteEmpresa(id):
     except Exception as err:
         Logger.add_to_log('error', err)
         return redirect(url_for('empresas.mostrar_empresas'))
+
+# @empresas.route('/usuarios_empresas')
+# @login_required
+# def getUsuariosEmpresa():
+#     row = user.get_usuarios_empresas()
+#     if row != None:
+#         return jsonify({"usuarios": row})
+#     else:
+#         return jsonify({"mensaje": "No existe usuarios"})
+    
+@empresas.route('/show_user_companie')
+@login_required
+def mostrar_usuarios_empresa():
+    return render_template('panel/usuario_empresa.html')

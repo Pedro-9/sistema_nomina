@@ -17,6 +17,13 @@ usuario = Blueprint('usuario', __name__, template_folder='templates')
 def index_login():
     return render_template('login.html')
 
+# Ruta para obtener todos los usuarios
+# ------------------------------------
+@usuario.route('/about')
+@login_required
+def about():
+    return render_template("about.html")
+
 # Ruta para el inicio de sesion
 # -----------------------------
 @usuario.route('/login', methods=['POST'])
@@ -167,3 +174,12 @@ def deleteUsuario(id):
             return jsonify({"mensaje": "Error al eliminar registro"})
     except Exception as e:
         return redirect(url_for('usuario.dashboardAdmin'))
+
+@usuario.route('/usuarios_empresas')
+@login_required
+def getUsuariosEmpresa():
+    row = user.get_usuarios_empresas()
+    if row != None:
+        return jsonify({"usuarios": row})
+    else:
+        return jsonify({"mensaje": "No existe usuarios"})
