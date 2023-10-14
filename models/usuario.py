@@ -21,6 +21,7 @@ class User(UserMixin):
 class Usuario:
     def __init__(self):
         self.id = 0
+        self.id_rol = 0
         self.ultimo_id = ''
 
     def getFecha(self):
@@ -96,7 +97,7 @@ class Usuario:
             SELECT * FROM usuarios WHERE id_usuario = %s
             AND estado = %s'''
         params = (id_usuario, '0')
-        return self.execute_query(query, params=params)
+        return self.execute_query(query, params=params), self.id_rol
 
     def existe_usuario(self, _usuario):
         query = '''
@@ -107,13 +108,13 @@ class Usuario:
 
     def validar_usuario(self, _usuario, id_empresa, password):
         self.id  = id_empresa
-        print(self.id )
         query = '''
             SELECT id_usuario, usuario, password, id_rol FROM usuarios WHERE usuario = %s 
             AND estado = %s AND id_empresa = %s'''
         params = (_usuario, '0', id_empresa)
         row = self.execute_query(query, params=params)
         if row != None:
+            self.id_rol = row['id_rol']
             user = User(row['id_usuario'], row['usuario'],
                         User.check_password(row['password'], password))
             return user, row['id_rol']
@@ -175,12 +176,7 @@ class Usuario:
             Logger.add_to_log("error", traceback.format_exc())
             return False
 
-    def get_id_empresa(self):
-        return self.id 
-    
     def get_usuarios_empresas(self):
-        id = self.get_id_empresa()
-        print(id)
         query = '''
             SELECT us.id_usuario, us.usuario, us.password, us.f_registro, 
                 us.f_modificacion, us.id_rol, rol.nombre_rol, us.id_empresa, em.nombre_empresa, us.estado
@@ -189,7 +185,21 @@ class Usuario:
                 on us.id_empresa = em.id_empresa  
                 inner join roles as rol 
                 on us.id_rol = rol.id_rol
-                WHERE us.estado = %s and em.id_empresa = %s
+                WHERE us.estado = %s and em.id_empresa = %s and rol.id_rol = %s
                 order by us.id_usuario desc'''
-        params = ('0', id)
+        params = ('0', self.id, '3')
         return self.execute_query(query, params=params, fetchall=True)
+    
+    def get_nombre_empresa(self):
+        query = '''
+            SELECT us.id_rol, rol.nombre_rol, us.id_empresa, em.nombre_empresa 
+                FROM usuarios as us 
+                inner join empresas as em 
+                on us.id_empresa = em.id_empresa  
+                inner join roles as rol 
+                on us.id_rol = rol.id_rol
+                WHERE us.estado = %s and rol.id_rol = %s and em.id_empresa = %s
+                order by us.id_usuario desc LIMIT 1
+                '''
+        params = ('0', self.id_rol, self.id)
+        return self.execute_query(query, params=params)

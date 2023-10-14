@@ -49,7 +49,7 @@ function mostrarDataUsuario(data) {
             body += `<tr><td>${data[i].id_usuario}</td><td>${data[i].usuario}</td>
                             <td>${data[i].f_registro}</td><td>${data[i].f_modificacion}</td><td>${data[i].nombre_rol}</td>
                             <td>${data[i].id_empresa}</td><td>${data[i].nombre_empresa}</td><td>${data[i].estado}</td><td>
-                            <button onclick="editar_usuario(${data[i].id_usuario}, ${data[i].id_empresa}, ${data[i].id_rol})" class="btn btn-warning"><ion-icon name="create-outline"></ion-icon></button>
+                            <button onclick="editar_usuario(${data[i].id_usuario}, ${data[i].id_rol})" class="btn btn-warning"><ion-icon name="create-outline"></ion-icon></button>
                             <button onclick="eliminar_usuario(${data[i].id_usuario})" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></button></td></tr>`
         }
     }
@@ -63,7 +63,7 @@ vercadena = document.getElementById('data');
 // --------------------------------------------------------
 // Funcion para mostrar lista de roles
 // --------------------------------------------------------
-function get_roles_select(tipo_select, defaultRolId = null) {
+function get_roles_select(tipo_select, defaultRolId = null, dashboard = null) {
     const type = tipo_select
     fetch('/roles', { method: 'GET' })
         .then(response => response.json())
@@ -72,23 +72,38 @@ function get_roles_select(tipo_select, defaultRolId = null) {
             select.innerHTML = ''; // Eliminar el mensaje de "Cargando roles..."
             //console.log(data)
             data = data.roles
-            data.forEach(rol => {
-                const option = document.createElement('option');
-                option.value = rol.id_rol; // Asigna el valor que desees
-                option.textContent = rol.nombre_rol; // Asigna el texto que desees
-                // Establece el valor seleccionado si coincide con el valor por defecto proporcionado
-                if (defaultRolId && rol.id_rol === defaultRolId) {
-                    option.selected = true;
+
+            if (dashboard) {
+                data.forEach(rol => {
+                    const option = document.createElement('option');
+                    if (rol.id_rol === 3) {
+                        option.value = rol.id_rol;
+                        option.textContent = rol.nombre_rol;
+                        select.appendChild(option);
+                    }
                 }
-                select.appendChild(option);
-            });
-        })
+                );
+            } else {
+                data.forEach(rol => {
+                    const option = document.createElement('option');
+                    option.value = rol.id_rol; // Asigna el valor que desees
+                    option.textContent = rol.nombre_rol; // Asigna el texto que desees
+                    // Establece el valor seleccionado si coincide con el valor por defecto proporcionado
+                    if (defaultRolId && rol.id_rol === defaultRolId) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+
+                });
+            }
+        }
+        )
         .catch(error => console.log(error))
 }
 // ---------------------------------
 // Generar contraseñas de 10 digitos
 // --------------------------------- 
-function generarPassword() {
+function generarPassword(id_input) {
     const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let contrasena = '';
     const longitud = 10; // Cambia la longitud de la contraseña según tus necesidades
@@ -98,9 +113,8 @@ function generarPassword() {
         contrasena += caracterAleatorio;
     }
 
-    const btnPass = document.getElementById('password')
+    const btnPass = document.getElementById(id_input)
     btnPass.value = contrasena;
-    console.log(contrasena)
 }
 
 
@@ -189,7 +203,7 @@ function resetForm(formulario) {
 // --------------------------------------------------------
 // Funcion para rellenar el formulario de editar usuario
 // --------------------------------------------------------
-function editar_usuario(id_usuario, id_empresa, id_rol) {
+function editar_usuario(id_usuario, id_rol) {
     fetch('/usuarios/' + id_usuario, { method: 'GET' })
         .then(response => response.json())
         .then(data => {
@@ -197,8 +211,15 @@ function editar_usuario(id_usuario, id_empresa, id_rol) {
             document.getElementById("id_usuario").value = data.id_usuario;
             document.getElementById("editUsuario").value = data.usuario;
             document.getElementById("editPassword").value = data.password;
-            get_roles_select('selectEditRoles', id_rol);
-            get_select_empresas('selectEditEmpresa', id_empresa);
+            console.log(data.identidad)
+            if (data.identidad === 1) {
+                get_roles_select('selectEditRoles', id_rol);
+                get_select_empresas('selectEditEmpresa');
+            } else {
+                get_roles_select('selectEditRoles', null, data.identidad);
+                get_select_empresas('selectEditEmpresa', data.id_empresa);
+            }
+
             $('#modal_editar').modal('show');
         })
         .catch(error => console.log(error))
@@ -279,27 +300,27 @@ function regresarEmpresa() {
 // Funcion Buscar. SEARCH
 // --------------------------------------------------------
 
-function Search(){
+function Search() {
 
     const buscador = document.getElementById('searchInput');
     const miTabla = document.getElementById('miTabla');
     const filas = document.getElementsByTagName('tr');
 
-buscador.addEventListener('input', () =>{
-    const buscadorText = buscador.value.toLowerCase();
+    buscador.addEventListener('input', () => {
+        const buscadorText = buscador.value.toLowerCase();
 
-    for(let i = 1; i < filas.length; i++){
-        const fila = filas[i];
-        const DatoUsuario = fila.textContent.toLowerCase();
+        for (let i = 1; i < filas.length; i++) {
+            const fila = filas[i];
+            const DatoUsuario = fila.textContent.toLowerCase();
 
-        if(DatoUsuario.includes(buscadorText)){
-            fila.style.display = '';
-        }else{
-            fila.style.display = 'none';
+            if (DatoUsuario.includes(buscadorText)) {
+                fila.style.display = '';
+            } else {
+                fila.style.display = 'none';
+            }
+
         }
-
-    }
-});
+    });
 
 }
 
@@ -334,8 +355,8 @@ function mostrarDataEmpresas(data) {
             body += `<tr><td>${data[i].id_empresa}</td><td>${data[i].nombre_empresa}</td>
                             <td>${data[i].fecha_ingreso}</td><td>${data[i].estado}</td>
                             <td>
-                            <button onclick="editar_empresa(${data[i].id_empresa})" class="btn btn-success">Editar</button>
-                            <button onclick="eliminar_empresa(${data[i].id_empresa})" class="btn btn-danger">Eliminar</button></td></tr>`
+                            <button onclick="editar_empresa(${data[i].id_empresa})" class="btn btn-warning"><ion-icon name="create-outline"></ion-icon></button>
+                            <button onclick="eliminar_empresa(${data[i].id_empresa})" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></button></td></tr>`
         }
     }
     document.getElementById('data_empresa').innerHTML = body;
@@ -416,18 +437,29 @@ function get_select_empresas(tipo_select, defaultIdEmpresa = null) {
             select.innerHTML = ''; // Eliminar el mensaje de "Cargando roles..."
             //console.log(data)
             data = data.empresas
-            data.forEach(empresa => {
-                const option = document.createElement('option');
-                option.value = empresa.id_empresa; // Asigna el valor que desees
-                option.textContent = empresa.nombre_empresa; // Asigna el texto que desees
 
-                // Establece el valor seleccionado si coincide con el valor por defecto proporcionado
-                if (defaultIdEmpresa && empresa.id_empresa === defaultIdEmpresa) {
-                    option.selected = true;
-                }
+            if (defaultIdEmpresa) {
+                data.forEach(empresa => {
+                    const option = document.createElement('option');
+                    if (empresa.id_empresa === defaultIdEmpresa) {
+                        option.value = empresa.id_empresa;
+                        option.textContent = empresa.nombre_empresa;
+                        select.appendChild(option);
+                    }
+                });
+            } else {
+                data.forEach(empresa => {
+                    const option = document.createElement('option');
+                    option.value = empresa.id_empresa;
+                    option.textContent = empresa.nombre_empresa;
 
-                select.appendChild(option);
-            });
+                    // Establece el valor seleccionado si coincide con el valor por defecto proporcionado
+                    if (defaultIdEmpresa && empresa.id_empresa === defaultIdEmpresa) {
+                        option.selected = true;
+                    }
+                    select.appendChild(option);
+                });
+            }
         })
         .catch(error => console.log(error))
 }
@@ -493,13 +525,13 @@ function eliminar_empresa(id_empresa) {
 // --------------------------------------------
 
 function mostrarMasUsuariosEmpre() {
-    pag_user_empre++;
+    pagina++;
     get_usuarios_Empre();
 }
 
 function regresarUsuariosEmpre() {
-    if (pag_user_empre > 1) {
-        pag_user_empre--;
+    if (pagina > 1) {
+        pagina--;
         get_usuarios_Empre();
     }
 }
@@ -509,33 +541,20 @@ function regresarUsuariosEmpre() {
 // --------------------------------------------------------
 function get_usuarios_Empre() {
     fetch('/usuarios_empresas', { method: 'GET' })
-        .then(response => response.json())
-        .then(data => mostrarDataUsuario(data))
-        .catch(error => console.log(error))
-}
-
-// --------------------------------------------------------
-// Funcion para mostrar datos de usuarios en tabla html
-// --------------------------------------------------------
-function mostrarDataUsuario(data) {
-    console.log(data)
-    data = data.usuarios
-    let body = ""
-    const inicio = (pagina - 1) * registrosPorPagina;
-    const fin = pagina * registrosPorPagina;
-    for (let i = inicio; i < fin; i++) {
-        if (i < data.length) {
-            if (data[i].estado === 0) {
-                data[i].estado = '<span class="badge badge-success">Activo</span>'
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('No se pudo obtener la respuesta esperada.');
             }
-            body += `<tr><td>${data[i].id_usuario}</td><td>${data[i].usuario}</td>
-                            <td>${data[i].f_registro}</td><td>${data[i].f_modificacion}</td><td>${data[i].nombre_rol}</td>
-                            <td>${data[i].id_empresa}</td><td>${data[i].nombre_empresa}</td><td>${data[i].estado}</td><td>
-                            <button onclick="editar_usuario(${data[i].id_usuario}, ${data[i].id_empresa}, ${data[i].id_rol})"class="btn btn-success">Editar</button>
-                            <button onclick="eliminar_usuario(${data[i].id_usuario})" class="btn btn-danger">Eliminar</button></td></tr>`
-        }
-    }
-    document.getElementById('data').innerHTML = body;
+            return response.json();
+        })
+        .then(data => {
+            if (data) {
+                mostrarDataUsuario(data);
+            } else {
+                console.log('Los datos recibidos no son válidos.');
+            }
+        })
+        .catch(error => console.error('Error en la solicitud:', error));
 }
 
 
@@ -548,7 +567,7 @@ function mostrarDataUsuario(data) {
 
 // Funciones para botones de tabla dinamica de roles
 //---------------------------------------------------------------
-function mostrarMasRoles(){
+function mostrarMasRoles() {
     pagina_rol++;
     get_roles();
 }
@@ -579,7 +598,7 @@ function mostrarDataRoles(data) {
     const fin = pagina_rol * row_rol;
     for (let i = inicio; i < fin; i++) {
         if (i < data.length) {
-            if (data[i].estado === 0){
+            if (data[i].estado === 0) {
                 data[i].estado = '<span class="badge badge-success">Activo</span>'
             }
             body += `<tr>
@@ -587,8 +606,8 @@ function mostrarDataRoles(data) {
                         <td>${data[i].nombre_rol}</td>
                         <td>${data[i].estado}</td>
                         <td>
-                            <button onclick="editar_rol(${data[i].id_rol})" class="btn btn-success">Editar</button>
-                            <button onclick="eliminar_rol(${data[i].id_rol})" class="btn btn-danger">Eliminar</button>
+                            <button onclick="editar_rol(${data[i].id_rol})" class="btn btn-warning"><ion-icon name="create-outline"></ion-icon></button>
+                            <button onclick="eliminar_rol(${data[i].id_rol})" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></button>
                         </td>
                     </tr>`
         }
@@ -648,7 +667,7 @@ function actualizar_rol() {
         return;
     }
     // armar el body 
-    const _body = { id: _id, rol: _rol}
+    const _body = { id: _id, rol: _rol }
     //console.log(_body)
     // Header por default
     const _header = { "Content-Type": "application/json" }
@@ -672,7 +691,7 @@ function actualizar_rol() {
 function eliminar_rol(id_rol) {
     if (confirm("¿Estás seguro de que deseas eliminar este registro?")) {
         // Enviar solicitud para eliminar el registro
-        fetch('/delete_rol/'+ id_rol)
+        fetch('/delete_rol/' + id_rol)
             .then(res => res.json())
             .then(response => {
                 alert(response.mensaje);
@@ -683,4 +702,23 @@ function eliminar_rol(id_rol) {
                 console.error("Error:", error);
             });
     }
+}
+
+// --------------------------------------------------------
+// Funcion para mostrar empresa que inicia sesion
+// --------------------------------------------------------
+function get_nombre_empresa(tipo_select) {
+    const type = tipo_select
+    fetch('/nombre_empresa', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            data = data.empresa
+            const select = document.getElementById(type);
+            select.innerHTML = '';
+            const option = document.createElement('option');
+            option.value = data.id_empresa; 
+            option.textContent = data.nombre_empresa; 
+            select.appendChild(option);
+        })
+        .catch(error => console.log(error))
 }

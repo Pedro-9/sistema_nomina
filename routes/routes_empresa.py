@@ -90,15 +90,6 @@ def deleteEmpresa(id):
     except Exception as err:
         Logger.add_to_log('error', err)
         return redirect(url_for('empresas.mostrar_empresas'))
-
-# @empresas.route('/usuarios_empresas')
-# @login_required
-# def getUsuariosEmpresa():
-#     row = user.get_usuarios_empresas()
-#     if row != None:
-#         return jsonify({"usuarios": row})
-#     else:
-#         return jsonify({"mensaje": "No existe usuarios"})
     
 @empresas.route('/show_user_companie')
 @login_required

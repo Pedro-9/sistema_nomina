@@ -9,7 +9,7 @@
     };</script>
 
 <section class="form container-fluid">
-    <button type="button" class="btns btn-primary" data-toggle="modal" data-target="#myModal" onclick="generarPassword()">
+    <button type="button" class="btns btn-primary" data-toggle="modal" data-target="#myModal" onclick="generarPassword('password')">
         Agregar
     </button>
 
@@ -71,7 +71,9 @@
                         <label for="usuario">Usuario:</label>
                         <input type="text" class="form-control" id="editUsuario" name="editUsuario" required>
                         <label for="password">Clave:</label>
-                        <input type="text" class="form-control" id="editPassword" name="editPassword" required>
+                        <button type="button" class="btn-primary" id="setearClave" 
+                            onclick="generarPassword('editPassword')">setear</button>
+                        <input type="text" class="form-control" id="editPassword" name="editPassword" required readonly>
                         <label for="rol">Rol:</label>
                         <select id="selectEditRoles" class="form-select" aria-label="Selecciona un rol">
                             <option value="">Cargando roles...</option>

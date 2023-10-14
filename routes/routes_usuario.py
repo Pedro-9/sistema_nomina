@@ -107,8 +107,9 @@ def getUsuarios():
 @usuario.route('/usuarios/<string:id_usuario>')
 @login_required
 def getUsuario(id_usuario):
-    usuario = user.get_usuario(id_usuario)
+    usuario, id_rol = user.get_usuario(id_usuario)
     if usuario!=None:
+        usuario["identidad"] = id_rol
         return jsonify({"Usuario": usuario})
     else:
         return jsonify({"mensaje": "Usuario no existe"})
@@ -183,3 +184,12 @@ def getUsuariosEmpresa():
         return jsonify({"usuarios": row})
     else:
         return jsonify({"mensaje": "No existe usuarios"})
+    
+
+@usuario.route('/nombre_empresa')
+def getNombreEmpresa():
+    row = user.get_nombre_empresa()
+    if row != None:
+        return jsonify({"empresa": row})
+    else:
+        return jsonify({"mensaje": "No existe empresa"})

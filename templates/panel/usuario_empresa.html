@@ -4,12 +4,13 @@
 <script>
     window.onload = function () {
         get_usuarios_Empre();
-        get_roles('selectRoles');
-        get_select_empresas('selectEmpresa');
+        get_roles_select('selectRoles', null, 2);
+        get_nombre_empresa('selectEmpresa');
     };</script>
 
 <section class="form container-fluid">
-    <button type="button" class="btns btn-primary" data-toggle="modal" data-target="#myModal" onclick="generarPassword()">
+    <button type="button" class="btns btn-primary" data-toggle="modal" data-target="#myModal"
+        onclick="generarPassword('password')">
         Agregar
     </button>
 
@@ -71,6 +72,8 @@
                         <label for="usuario">Usuario:</label>
                         <input type="text" class="form-control" id="editUsuario" name="editUsuario" required>
                         <label for="password">Clave:</label>
+                        <button type="button" class="btn-primary" id="setearClave" 
+                            onclick="generarPassword('editPassword')">setear</button>
                         <input type="text" class="form-control" id="editPassword" name="editPassword" required>
                         <label for="rol">Rol:</label>
                         <select id="selectEditRoles" class="form-select" aria-label="Selecciona un rol">
@@ -92,10 +95,10 @@
             </div>
         </div>
     </div>
-    
+
     <label for="buscar">Buscar:</label>
 
-    <input type="text" id="searchInput" placeholder="Buscar...">
+    <input type="text" id="searchInput" placeholder="Buscar..." onclick="Search()">
     <ul id="results"></ul>
     <table id="miTabla" class="miTabla">
         <thead>
@@ -115,8 +118,8 @@
             <!-- Aquí se insertarán los registros dinámicamente -->
         </tbody>
     </table>
-    <button class="btns" id="regresarUsuarios" onclick="regresarUsuarios()">Regresar</button>
-    <button class="btns" id="mostrarMasUsuarios" onclick="mostrarMasUsuarios()">Mostrar Más</button>
+    <button class="btns" id="regresarUsuarios" onclick="regresarUsuariosEmpre()">Regresar</button>
+    <button class="btns" id="mostrarMasUsuarios" onclick="mostrarMasUsuariosEmpre()">Mostrar Más</button>
 
 </section>
 
