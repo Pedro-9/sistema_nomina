@@ -109,9 +109,12 @@ class Usuario:
     def validar_usuario(self, _usuario, id_empresa, password):
         self.id  = id_empresa
         query = '''
-            SELECT id_usuario, usuario, password, id_rol FROM usuarios WHERE usuario = %s 
-            AND estado = %s AND id_empresa = %s'''
-        params = (_usuario, '0', id_empresa)
+            SELECT us.id_usuario, us.usuario, us.password, us.id_rol from usuarios as us
+            INNER JOIN empresas as em
+            ON em.id_empresa = us.id_empresa  
+            WHERE us.usuario = %s
+            AND us.estado = %s AND em.estado = %s'''
+        params = (_usuario, '0', '0')
         row = self.execute_query(query, params=params)
         if row != None:
             self.id_rol = row['id_rol']
