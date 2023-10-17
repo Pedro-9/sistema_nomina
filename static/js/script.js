@@ -211,10 +211,10 @@ function editar_usuario(id_usuario, id_rol) {
             document.getElementById("id_usuario").value = data.id_usuario;
             document.getElementById("editUsuario").value = data.usuario;
             document.getElementById("editPassword").value = data.password;
-            console.log(data.identidad)
+            
             if (data.identidad === 1) {
                 get_roles_select('selectEditRoles', id_rol);
-                get_select_empresas('selectEditEmpresa');
+                get_select_empresas('selectEditEmpresa', data.id_empresa, data.identidad);
             } else {
                 get_roles_select('selectEditRoles', null, data.identidad);
                 get_select_empresas('selectEditEmpresa', data.id_empresa);
@@ -428,7 +428,7 @@ function add_empresa() {
 // --------------------------------------------------------
 // Funcion para mostrar lista de roles
 // --------------------------------------------------------
-function get_select_empresas(tipo_select, defaultIdEmpresa = null) {
+function get_select_empresas(tipo_select, defaultIdEmpresa = null, dashboard = null) {
     const type = tipo_select
     fetch('/empresas', { method: 'GET' })
         .then(response => response.json())
@@ -438,7 +438,7 @@ function get_select_empresas(tipo_select, defaultIdEmpresa = null) {
             //console.log(data)
             data = data.empresas
 
-            if (defaultIdEmpresa) {
+            if (defaultIdEmpresa && dashboard === null) {
                 data.forEach(empresa => {
                     const option = document.createElement('option');
                     if (empresa.id_empresa === defaultIdEmpresa) {
@@ -454,7 +454,7 @@ function get_select_empresas(tipo_select, defaultIdEmpresa = null) {
                     option.textContent = empresa.nombre_empresa;
 
                     // Establece el valor seleccionado si coincide con el valor por defecto proporcionado
-                    if (defaultIdEmpresa && empresa.id_empresa === defaultIdEmpresa) {
+                    if (dashboard && empresa.id_empresa === defaultIdEmpresa) {
                         option.selected = true;
                     }
                     select.appendChild(option);
