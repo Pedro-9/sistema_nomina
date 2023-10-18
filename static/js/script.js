@@ -50,7 +50,8 @@ function mostrarDataUsuario(data) {
                             <td>${data[i].f_registro}</td><td>${data[i].f_modificacion}</td><td>${data[i].nombre_rol}</td>
                             <td>${data[i].id_empresa}</td><td>${data[i].nombre_empresa}</td><td>${data[i].estado}</td><td>
                             <button onclick="editar_usuario(${data[i].id_usuario}, ${data[i].id_rol})" class="btn btn-warning"><ion-icon name="create-outline"></ion-icon></button>
-                            <button onclick="eliminar_usuario(${data[i].id_usuario})" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></button></td></tr>`
+                            <button onclick="eliminar_usuario(${data[i].id_usuario})" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></button>
+                            <button onclick="" class="btn btn-primary" </button>ver</td></tr>`
         }
     }
     document.getElementById('data').innerHTML = body;

@@ -1,16 +1,15 @@
-{% extends "dashboard/empresa.html" %}
+{% extends "dashboard/empleado.html" %}
 {% block body %}
 
 <script>
     window.onload = function () {
-        get_usuarios_Empre();
-        get_roles_select('selectRoles', null, 2);
-        get_nombre_empresa('selectEmpresa');
+        get_empleado();
+        get_roles_select('selectRoles');
+        get_select_empresas('selectEmpresa');
     };</script>
 
 <section class="form container-fluid">
-    <button type="button" class="btns btn-primary" data-toggle="modal" data-target="#myModal"
-        onclick="generarPassword('password')">
+    <button type="button" class="btns btn-primary" data-toggle="modal" data-target="#myModal" onclick="generarPassword('password')">
         Agregar
     </button>
 
@@ -46,7 +45,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary" id="submitBtn"
-                        onclick="add_usuario()">Guardar</button>
+                        onclick="add_empleado()">Guardar</button>
                 </div>
             </div>
         </div>
@@ -74,7 +73,7 @@
                         <label for="password">Clave:</label>
                         <button type="button" class="btn-primary" id="setearClave" 
                             onclick="generarPassword('editPassword')">setear</button>
-                        <input type="text" class="form-control" id="editPassword" name="editPassword" required>
+                        <input type="text" class="form-control" id="editPassword" name="editPassword" required readonly>
                         <label for="rol">Rol:</label>
                         <select id="selectEditRoles" class="form-control" aria-label="Selecciona un rol">
                             <option value="">Cargando roles...</option>
@@ -90,12 +89,12 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary" id="submitBtn"
-                        onclick="actualizar_usuario()">Guardar</button>
+                        onclick="actualizar_empleado()">Guardar</button>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <label for="buscar">Buscar:</label>
 
     <input type="text" id="searchInput" placeholder="Buscar..." onclick="Search()">
@@ -104,12 +103,13 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>USUARIO</th>
-                <th>FECHA REGISTRO</th>
-                <th>FECHA MODIFICACION</th>
-                <th>ROL</th>
-                <th>ID EMPRESA</th>
-                <th>EMPRESA</th>
+                <th>NOMBRE</th>
+                <th>APELLIDO</th>
+                <th>DPI</th>
+                <th>NIT</th>
+                <th>DIRECCION</th>
+                <th>TELEFONO</th>
+                <th>CORREO</th>
                 <th>ESTADO</th>
                 <th>ACCIONES</th>
             </tr>
@@ -118,8 +118,8 @@
             <!-- Aquí se insertarán los registros dinámicamente -->
         </tbody>
     </table>
-    <button class="btns" id="regresarUsuarios" onclick="regresarUsuariosEmpre()">Regresar</button>
-    <button class="btns" id="mostrarMasUsuarios" onclick="mostrarMasUsuariosEmpre()">Mostrar Más</button>
+    <button class="btns" id="regresarEmpleado" onclick="regresarEmpleado()">Regresar</button>
+    <button class="btns" id="mostrarMasEmpleado" onclick="mostrarEmpleado()">Mostrar Más</button>
 
 </section>
 
