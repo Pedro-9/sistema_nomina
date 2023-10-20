@@ -113,8 +113,9 @@ class Usuario:
             INNER JOIN empresas as em
             ON em.id_empresa = us.id_empresa  
             WHERE us.usuario = %s
-            AND us.estado = %s AND em.estado = %s'''
-        params = (_usuario, '0', '0')
+            AND us.estado = %s AND em.estado = %s 
+            AND us.id_empresa = %s'''
+        params = (_usuario, '0', '0', id_empresa)
         row = self.execute_query(query, params=params)
         if row != None:
             self.id_rol = row['id_rol']
