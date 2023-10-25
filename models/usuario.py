@@ -207,3 +207,16 @@ class Usuario:
                 '''
         params = ('0', self.id_rol, self.id)
         return self.execute_query(query, params=params)
+    
+    def get_empleados_empresa(self):
+        query = '''
+        select em.id_empleado, em.nombre, em.apellido, em.dpi, em.nit, em.igss, 
+        em.direccion, em.telefono, em.correo, em.genero, emp.nombre_empresa, p.puesto, em.estado
+        from empleados as em
+        inner join puestos as p
+        on em.id_puesto = p.id
+        inner join empresas as emp
+        on emp.id_empresa = em.id_empresa 
+        where em.estado = %s AND emp.id_empresa = %s order by id_empleado desc'''
+        params = ('0',self.id)
+        return self.execute_query(query, params=params, fetchall=True)

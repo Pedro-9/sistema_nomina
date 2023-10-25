@@ -6,7 +6,7 @@ from flask_login import login_required
 # objeto del controlador rol
 rol = Rol()
 
-roles = Blueprint('rol', __name__, template_folder='templates')
+roles = Blueprint('roles', __name__, template_folder='templates')
 
 @roles.route('/roles')
 def getRoles():

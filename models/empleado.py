@@ -43,7 +43,7 @@ class Empleado:
     def insert_empleado(self, nombre_empresa):
         if self.existe_empresa(nombre_empresa) == None:
             query = '''
-                        INSERT INTO empresas (
+                        INSERT INTO empleados (
                         nombre_empresa,
                         fecha_ingreso,
                         estado, id_usuario) VALUES (%s, %s, %s, %s)'''
@@ -52,19 +52,27 @@ class Empleado:
         else:
             return False
         
-    def existe_empresa(self, nombre_empresa):
+    def existe_empleado(self, nombre_empresa):
         query = '''
             SELECT * FROM empresas WHERE nombre_empresa = %s 
             AND estado = %s '''
         params = (nombre_empresa, '0')
         return self.execute_query(query, params=params)
 
-    def get_empresas(self):
-        query = 'SELECT * FROM empresas where estado = %s order by id_empresa desc'
+    def get_empleados(self):
+        query = '''
+        select em.id_empleado, em.nombre, em.apellido, em.dpi, em.nit, em.igss, 
+        em.direccion, em.telefono, em.correo, em.genero, emp.nombre_empresa, p.puesto, em.estado
+        from empleados as em
+        inner join puestos as p
+        on em.id_puesto = p.id
+        inner join empresas as emp
+        on emp.id_empresa = em.id_empresa 
+        where em.estado = %s order by id_empleado desc'''
         params = ('0')
         return self.execute_query(query, params=params, fetchall=True)
 
-    def get_empresa(self, id_empresa):
+    def get_empleado(self, id_empresa):
         query = '''
             SELECT *
             FROM empresas
@@ -73,7 +81,7 @@ class Empleado:
         params = (id_empresa, '0')
         return self.execute_query(query, params)
 
-    def update_empresa(self, nombre_empresa, id_empresa):
+    def update_empleado(self, nombre_empresa, id_empresa):
         query = '''
             UPDATE empresas
             SET nombre_empresa = %s
@@ -91,7 +99,7 @@ class Empleado:
         params = (id_usuario, id_empresa)
         return self.execute_commit(query, params)
 
-    def delete_empresa(self, id_empresa, estado):
+    def delete_empleado(self, id_empresa, estado):
         query = '''
             UPDATE empresas
             SET estado = %s, fecha_retiro = %s

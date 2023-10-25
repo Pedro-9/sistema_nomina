@@ -193,3 +193,13 @@ def getNombreEmpresa():
         return jsonify({"empresa": row})
     else:
         return jsonify({"mensaje": "No existe empresa"})
+    
+
+@usuario.route('/empleados_empresa')
+@login_required
+def getEmpleadosEmpresa():
+    row = user.get_empleados_empresa()
+    if row != None:
+        return jsonify({"empleados": row})
+    else:
+        return jsonify({"mensaje": "No existe empleados"})

@@ -7,26 +7,32 @@ from flask_login import login_required
 # objeto del controlador usuario
 empleado = Empleado()
 user = Usuario()
-empleado = Blueprint('empleado', __name__, template_folder='templates')
+empleados = Blueprint('empleados', __name__, template_folder='templates')
 
 
-@empleado.route('/empleados')
+@empleados.route('/empleados')
 @login_required
-def getEmpresas():
-    row = empleado.get_empresas()
+def getEmpleados():
+    row = empleado.get_empleados()
     if row != None:
-        return jsonify({"empresas": row})
+        return jsonify({"empleados": row})
     else:
-        return jsonify({"mensaje": "No existe empresas"})
+        return jsonify({"mensaje": "No existe empleados"})
 
-@empleado.route('/show_employee')
+@empleados.route('/show_employee')
 @login_required
-def mostrar_empresas():
+def mostrar_empleados():
     return render_template('panel/empleado.html')
+
+
+@empleados.route('/show_employee_conpanie')
+@login_required
+def mostrar_empleados_empresa():
+    return render_template('panel/empleado_empresa.html')
 
 # Ruta para obtener una empresa
 # ----------------------------
-@empleado.route('/empresa/<string:id_empresa>')
+@empleados.route('/empresa/<string:id_empresa>')
 @login_required
 def getEmpresa(id_empresa):
     row = empleado.get_empresa(id_empresa)
@@ -37,13 +43,13 @@ def getEmpresa(id_empresa):
 
 # Ruta para insetar nueva empresa
 # -------------------------------
-@empleado.route('/insert_empresa', methods=['POST'])
+@empleados.route('/insert_empresa', methods=['POST'])
 @login_required
 def insertEmpresa():
     if request.method == 'POST':
         var_empresa = request.json['empresa']
         try:
-            response = empleado.insert_empresa(var_empresa)
+            response = empleado.insert_empleado(var_empresa)
             
             if response:
                 Logger.add_to_log(
@@ -56,7 +62,7 @@ def insertEmpresa():
             return redirect(url_for('empresas.mostrar_empresas'))
 
 
-@empleado.route('/update_empresa', methods=['POST'])
+@empleados.route('/update_empresa', methods=['POST'])
 @login_required
 def updateEmpresa():
     if request.method == 'POST':
@@ -64,7 +70,7 @@ def updateEmpresa():
         id_empresa = request.json['id']
 
         try:
-            response = empleado.update_empresa(nombre_empresa, id_empresa)
+            response = empleado.update_empleado(nombre_empresa, id_empresa)
             if response:
                 Logger.add_to_log("info", f"Empresa actualializado exitosamente id: {id_empresa} nombre: {nombre_empresa}")
                 return jsonify({"mensaje": "Empresa actualizado exitosamente"})
@@ -76,11 +82,11 @@ def updateEmpresa():
             return redirect(url_for('empresas.mostrar_empresas'))
 
 
-@empleado.route('/delete_empresa/<string:id>', methods=['POST', 'GET'])
+@empleados.route('/delete_empresa/<string:id>', methods=['POST', 'GET'])
 @login_required
 def deleteEmpresa(id):
     try:
-        response = empleado.delete_empresa(id,'1')
+        response = empleado.delete_empleado(id,'1')
         if response:
             Logger.add_to_log("info", f"Empresa eliminado exitosamente id: {id}")
             return jsonify({"mensaje": "Emprea eliminado exitosamente"})
@@ -91,7 +97,7 @@ def deleteEmpresa(id):
         Logger.add_to_log('error', err)
         return redirect(url_for('empresas.mostrar_empresas'))
     
-@empleado.route('/show_user_companie')
+@empleados.route('/show_user_companie')
 @login_required
 def mostrar_usuarios_empresa():
     return render_template('panel/usuario_empresa.html')

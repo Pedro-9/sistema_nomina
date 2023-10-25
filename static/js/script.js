@@ -2,10 +2,14 @@ let pagina = 1;
 let pagina_empresa = 1;
 let pag_user_empre = 1;
 let pagina_rol = 1;
+let pagina_empleado = 1;
+let pag_empl_empre = 1;
 const registrosPorPagina = 10;
 const row_empresa = 10;
 const row_rol = 10;
 const row_user_empre = 10;
+const row_empleado = 10;
+const row_empl_empre = 10;
 
 // Eventos botones para tabla dinamica usuarios
 // --------------------------------------------
@@ -212,7 +216,7 @@ function editar_usuario(id_usuario, id_rol) {
             document.getElementById("id_usuario").value = data.id_usuario;
             document.getElementById("editUsuario").value = data.usuario;
             document.getElementById("editPassword").value = data.password;
-            
+
             if (data.identidad === 1) {
                 get_roles_select('selectEditRoles', id_rol);
                 get_select_empresas('selectEditEmpresa', data.id_empresa, data.identidad);
@@ -717,9 +721,176 @@ function get_nombre_empresa(tipo_select) {
             const select = document.getElementById(type);
             select.innerHTML = '';
             const option = document.createElement('option');
-            option.value = data.id_empresa; 
-            option.textContent = data.nombre_empresa; 
+            option.value = data.id_empresa;
+            option.textContent = data.nombre_empresa;
             select.appendChild(option);
+        })
+        .catch(error => console.log(error))
+}
+
+function mostrarMasEmpleados() {
+    pagina_empleado++;
+    get_empleados();
+}
+
+function regresarEmpleados() {
+    if (pagina_empleado > 1) {
+        pagina_empleado--;
+        get_empleados();
+    }
+}
+
+
+// --------------------------------------------------------
+// Funcion para obtener la lista de todos los empleados
+// --------------------------------------------------------
+function get_empleados() {
+    fetch('/empleados', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => mostrarDataEmpleado(data))
+        .catch(error => console.log(error))
+}
+
+// --------------------------------------------------------
+// Funcion para mostrar datos de empleados en tabla html
+// --------------------------------------------------------
+function mostrarDataEmpleado(data) {
+    console.log(data)
+    data = data.empleados
+    let body = ""
+    const inicio = (pagina_empleado - 1) * row_empleado;
+    const fin = pagina_empleado * row_empleado;
+    for (let i = inicio; i < fin; i++) {
+        if (i < data.length) {
+            if (data[i].estado === 0) {
+                data[i].estado = '<span class="badge badge-success">Activo</span>'
+            }
+            body += `<tr><td>${data[i].id_empleado}</td><td>${data[i].nombre}</td><td>${data[i].apellido}</td>
+                            <td>${data[i].dpi}</td><td>${data[i].nit}</td>
+                            <td>${data[i].telefono}</td><td>${data[i].correo}</td><td>${data[i].estado}</td>
+                            <td>${data[i].nombre_empresa}</td><td>${data[i].puesto}</td><td>
+                            <button onclick="editar_empleado(${data[i].id_empleado}, ${data[i].id_rol})" class="btn btn-warning"><ion-icon name="create-outline"></ion-icon></button>
+                            <button onclick="eliminar_empleado(${data[i].id_empleado})" class="btn btn-danger"><ion-icon name="trash-outline"></ion-icon></button>
+                            </td></tr>`
+        }
+    }
+    document.getElementById('data').innerHTML = body;
+}
+
+function validarCorreo(correo) {
+    let expresionRegular = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    return expresionRegular.test(correo);
+}
+
+function validarFormulario() {
+    const nombres = document.getElementById("nombres").value;
+    const apellidos = document.getElementById("apellidos").value;
+    const dpi = document.getElementById("dpi").value;
+    const nit = document.getElementById("nit").value;
+    const direccion = document.getElementById("direccion").value;
+    const celular = document.getElementById("celular").value;
+    const correo = document.getElementById("correo").value;
+    //const genero = document.getElementById("genero").value;
+    const rol = document.getElementById("selectRoles").value;
+    const empresa = document.getElementById("selectEmpresa").value;
+    const puesto = document.getElementById("selectPuesto").value;
+    const usuario = document.getElementById("usuario").value;
+    const password = document.getElementById("password").value;
+
+    if (nombres.length < 3) {
+        alert("En nombres agregar más de tres carácteres");
+        return;
+    }
+    if (apellidos.length < 3) {
+        alert("En apellidos agregar más de tres carácteres");
+        return;
+    }
+
+    if (isNaN(dpi) || dpi.length!=13) {
+        alert(" Número de DPI incorrecto, ingresar 13 digitos");
+        return;
+    }
+
+    if (isNaN(nit) || nit.length!=8) {
+        alert("Número de NIT incorrecto, ingresar 8 digitos");
+        return;
+    }
+
+    if (direccion.length < 5 ) {
+        alert("En dirección agregar más de cinco carácteres");
+        return;
+    }
+
+    if (isNaN(celular) || celular.length != 8) {
+        alert("Número de celular incorrecto, ingresar 8 digitos");
+        return;
+    }
+
+    if (!validarCorreo(correo)) {
+        alert("Correo no válido");
+        return;
+    }
+    if (isNaN(rol)) {
+        alert("Por favor seleccionar rol");
+        return;
+    }
+    if (isNaN(empresa)) {
+        alert("Por favor seleccionar empresa");
+        return;
+    }
+    
+    if (isNaN(puesto)) {
+        alert("Por favor seleccionar puesto");
+        return;
+    }
+    if (isNaN(usuario) || isNaN(password)) {
+        alert("Por favor ingresar usuario y contraseña");
+        return;
+    }
+}
+
+function add_empleado() {
+    validarFormulario();
+}
+
+function mostrarEmpleados2() {
+    pag_empl_empre++;
+    get_empleados2();
+}
+
+function regresarEmpleados2() {
+    if (pag_empl_empre > 1) {
+        pag_empl_empre--;
+        get_empleados2();
+    }
+}
+
+// --------------------------------------------------------
+// Funcion para obtener la lista de todos los empleados
+// --------------------------------------------------------
+function get_empleados2() {
+    fetch('/empleados_empresa', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => mostrarDataEmpleado(data))
+        .catch(error => console.log(error))
+}
+
+
+function get_puestos(tipo_select) {
+    const type = tipo_select
+    fetch('/puestos', { method: 'GET' })
+        .then(response => response.json())
+        .then(data => {
+            json = data.puestos
+            const select = document.getElementById(type);
+            select.innerHTML = '';
+            json.forEach(row => {
+                const option = document.createElement('option');
+                option.value = row.id;
+                option.textContent = row.puesto;
+                select.appendChild(option);
+            }
+            );
         })
         .catch(error => console.log(error))
 }
