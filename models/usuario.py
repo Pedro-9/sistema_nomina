@@ -221,3 +221,41 @@ class Usuario:
         where em.estado = %s AND emp.id_empresa = %s order by id_empleado desc'''
         params = ('0',self.id)
         return self.execute_query(query, params=params, fetchall=True)
+    
+
+    def get_nomina_data(self):
+        query = '''
+            SELECT
+			e.id_empleado,
+            CONCAT(e.nombre, ' ', e.apellido) as nombre,
+            r.nombre_rol,
+            n.dias,
+            pues.sueldo,
+            n.horas_extra,
+            f_valorHora(pues.sueldo, n.horas_extra) as valor,
+            n.comisiones,
+            n.bonificaciones,
+            (pues.sueldo + f_valorHora( pues.sueldo, n.horas_extra) + n.comisiones) AS TOTAL_DEVENGADO,
+            f_igss(pues.sueldo, n.horas_extra, n.comisiones, b.descuento_igss) AS IGGS,
+            f_ISR(pues.sueldo, n.horas_extra, n.comisiones, b.descuento_igss, b.descuento_isr, n.bonificaciones) AS ISR,
+            an.monto as anticipo,
+            p.monto as descuento_prestamo,
+            (f_igss( pues.sueldo, n.horas_extra, n.comisiones, b.descuento_igss) + 
+             f_ISR( pues.sueldo, n.horas_extra, n.comisiones, b.descuento_igss, b.descuento_isr, n.bonificaciones) + 
+             an.monto + p.monto) AS TotalDescuento,
+            (( pues.sueldo + f_valorHora( pues.sueldo, n.horas_extra) + n.comisiones) - 
+             (f_igss( pues.sueldo, n.horas_extra, n.comisiones, b.descuento_igss) + 
+              f_ISR( pues.sueldo, n.horas_extra, n.comisiones, b.descuento_igss, b.descuento_isr, n.bonificaciones) + 
+              an.monto + p.monto)) AS TOTAL_LIQUIDO
+            FROM empleados e
+            INNER JOIN usuarios u ON e.id_usuario = u.id_usuario
+            INNER JOIN roles r ON u.id_rol = r.id_rol
+            INNER JOIN nominas n ON e.id_empleado = n.id_empleado
+            INNER JOIN bauchers b ON n.id_nomina = b.id_nomina
+            INNER JOIN PRESTAMOS p ON u.id_usuario = p.id_usuario_solicita
+            INNER JOIN anticipos an ON u.id_usuario = an.id_usuario
+            INNER JOIN puestos pues ON e.id_empleado = pues.id
+            WHERE e.id_empresa = %s ;
+        '''
+        params = (self.id)
+        return self.execute_query(query, params = params, fetchall=True)

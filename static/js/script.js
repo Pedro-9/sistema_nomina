@@ -1104,10 +1104,11 @@ function mostrarDataNominas(data) {
     for (let i = inicio; i < fin; i++) {
         if (i < data.length) {
             body += `<tr>
-                        <td>${data[i].usuario}</td>
+                        <td>${data[i].id_empleado}</td>
                         <td>${data[i].nombre}</td>
                         <td>${data[i].nombre_rol}</td>
-                        <td>${data[i].salario_base}</td>
+                        <td>${data[i].dias}</td>
+                        <td>${data[i].sueldo}</td>
                         <td>${data[i].horas_extra}</td>
                         <td>${data[i].valor}</td>
                         <td>${data[i].comisiones}</td>
