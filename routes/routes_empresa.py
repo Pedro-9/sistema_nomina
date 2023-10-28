@@ -98,7 +98,11 @@ def deleteEmpresa(id):
     except Exception as err:
         Logger.add_to_log('error', err)
         return redirect(url_for('empresas.mostrar_empresas'))
-
+    
+@empresas.route('/show_user_companie')
+@login_required
+def mostrar_usuarios_empresa():
+    return render_template('panel/usuario_empresa.html')
 
 
 # Ruta para nomina
