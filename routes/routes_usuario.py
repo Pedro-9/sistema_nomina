@@ -39,11 +39,15 @@ def login():
                 if logged_user.password:
                     login_user(logged_user)
                     if rol == 1:
-                        return redirect(url_for('usuario.dashboardAdmin'))
+                        return redirect(url_for('usuario.dashboardAdministrador'))
                     elif rol == 2:
                         return redirect(url_for('usuario.dashboardEmpresa'))
                     elif rol == 3:
                         return redirect(url_for('usuario.dashboardEmpleado'))
+                    elif rol == 4:
+                        return redirect(url_for('usuario.dashboardRRHH'))
+                    elif rol == 5:
+                        return redirect(url_for('usuario.dashboardJefe'))
                 else:
                     flash('Usuario incorrecto')
                     return redirect(url_for('usuario.index_login'))
@@ -74,8 +78,8 @@ def mostrar_usuarios():
 # --------------------------------------------
 @usuario.route('/dashboard')
 @login_required
-def dashboardAdmin():
-    return render_template("dashboard/admin.html")
+def dashboardAdministrador():
+    return render_template("dashboard/administrador.html")
 
 # Ruta para mostrar dashboard de empresa
 # --------------------------------------------
@@ -90,6 +94,21 @@ def dashboardEmpresa():
 @login_required
 def dashboardEmpleado():
     return render_template("dashboard/empleado.html")
+
+# Ruta para mostrar dashboard de empleado
+# --------------------------------------------
+@usuario.route('/dashboard_jefe')
+@login_required
+def dashboardJefe():
+    return render_template("dashboard/jefe.html")
+
+# Ruta para mostrar dashboard de recursos humanos
+# --------------------------------------------
+@usuario.route('/dashboard_rrhh')
+@login_required
+def dashboardRRHH():
+    return render_template("dashboard/rrhh.html")
+
 
 # Ruta para obtener todos los usuarios
 # ------------------------------------

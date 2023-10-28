@@ -20,7 +20,7 @@
       <nav class="navegation">
         <ul>
           <li style="--i: #56ccf2; --j:#2f80ed;">
-            <a href="/dashboard_empresa">
+            <a href="/dashboard_rrhh">
               <span class="icon"><ion-icon name="home-outline"></ion-icon>
               </span>
               <span class="title">Home</span>
@@ -42,42 +42,38 @@
           </li>
         </ul>
       </nav>
-
     </header>
 
     <div class="body">
       <section class="panel ">
         <ul>
-          <li><a href="/show_employee">Empleado</a></li>
-          <li><a href="/show_users">Usuarios</a></li>
-          <li><a href="/show_user_nominass">Horas</a></li>
-          <li><a href="/show_user_prestamos">Prestamos</a></li>
-          <li><a href="/show_user_anticipos">Anticipo</a></li>
-          <li><a href="/show_user_nomina">Nomina</a></li>
-          <li><a href="/show_departments">Departamentos</a></li>
-                  </ul>
+            <li><a href="/show_notificaciones">Notificaciones</a></li>
+            <li><a href="/show_employee">Empleados</a></li>
+            <li><a href="/show_payroll">Nómina</a></li>
+            <li><a href="/show_solicitudes">Solicitudes</a></li>
+        </ul>
       </section>
       
       {% block body %}
       {% endblock %}
     </div>
 
-
     <!-- footer -->
     <!-- scripts -->
     <footer class="footer text-light">
-      <div class="text-center">
-      <ul>
-        <li>
-          ¡Hola {{ current_user.username }}, Bienvenido!
-          </li>
-          <li>
-            <small>&copy; 2023 T Consulting S.A. Todos los derechos reservados.</small>
-        </li>
-      </ul>
-  </div>
-    </footer>
+        <div class="text-center">
+          <ul>
+            <li>
+              ¡Hola {{ current_user.username }}, Bienvenido! (ID: {{ current_user.id_role }}).
+            </li>
+            <li>
+              <small>&copy; 2023 T Consulting S.A. Todos los derechos reservados.</small>
+            </li>
+          </ul>
+        </div>
+      </footer>
 
+    </footer>
   </main>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

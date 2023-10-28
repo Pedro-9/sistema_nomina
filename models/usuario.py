@@ -8,10 +8,11 @@ from flask_login import UserMixin
 
 class User(UserMixin):
 
-    def __init__(self, id, username, password) -> None:
+    def __init__(self, id, username, password, id_role) -> None:
         self.id = id
         self.username = username
         self.password = password
+        self.id_role = id_role
 
     @classmethod
     def check_password(self, hashed_password, password):
@@ -21,7 +22,7 @@ class User(UserMixin):
 class Usuario:
     def __init__(self):
         self.id = 0
-        self.id_rol = 0
+        self.id_role = 0
         self.ultimo_id = ''
 
     def getFecha(self):
@@ -53,7 +54,7 @@ class Usuario:
             Logger.add_to_log("error", traceback.format_exc())
             return None
 
-    def insert_usuario(self, usuario, password, id_rol, id_empresa):
+    def insert_usuario(self, usuario, password, id_role, id_empresa):
         try:
             password_hash = generate_password_hash(password)
             if self.existe_usuario(usuario) == None:
@@ -63,7 +64,7 @@ class Usuario:
                                 usuario, password, f_registro,
                                 f_modificacion, estado, id_rol, id_empresa) 
                                 VALUES (%s, %s, %s, %s, %s, %s, %s)''',
-                                   (usuario, password_hash, self.getFecha(), self.getFecha(), '0', id_rol, id_empresa))
+                                   (usuario, password_hash, self.getFecha(), self.getFecha(), '0', id_role, id_empresa))
                 mysql.connection.commit()
                 self.ultimo_id = self.get_ultimo_id()
                 return True
@@ -97,7 +98,7 @@ class Usuario:
             SELECT * FROM usuarios WHERE id_usuario = %s
             AND estado = %s'''
         params = (id_usuario, '0')
-        return self.execute_query(query, params=params), self.id_rol
+        return self.execute_query(query, params=params), self.id_role
 
     def existe_usuario(self, _usuario):
         query = '''
@@ -118,9 +119,9 @@ class Usuario:
         params = (_usuario, '0', '0', id_empresa)
         row = self.execute_query(query, params=params)
         if row != None:
-            self.id_rol = row['id_rol']
+            self.id_role = row['id_rol']
             user = User(row['id_usuario'], row['usuario'],
-                        User.check_password(row['password'], password))
+                        User.check_password(row['password'], password), None)
             return user, row['id_rol']
         else:
             return None, None
@@ -133,19 +134,19 @@ class Usuario:
     def get_by_id(self, id):
         try:
             cursor = mysql.connection.cursor()
-            sql = "SELECT id_usuario, usuario FROM usuarios WHERE id_usuario = {}".format(
+            sql = "SELECT id_usuario, usuario, id_rol FROM usuarios WHERE id_usuario = {}".format(
                 id)
             cursor.execute(sql)
             row = cursor.fetchone()
             if row != None:
-                return User(row['id_usuario'], row['usuario'], None)
+                return User(row['id_usuario'], row['usuario'], None, row['id_rol'])
             else:
                 return None
         except Exception as err:
             Logger.add_to_log("error", str(err))
             Logger.add_to_log("error", traceback.format_exc())
 
-    def update_usuario(self, usuario, password, id_rol, id_empresa, id_usuario):
+    def update_usuario(self, usuario, password, id_role, id_empresa, id_usuario):
         try:
             if len(password) < 100:
                 password_hash = generate_password_hash(password)
@@ -157,7 +158,7 @@ class Usuario:
                                 SET usuario = %s, password = %s, f_modificacion = %s, 
                                 id_rol = %s, id_empresa = %s
                                 WHERE id_usuario = %s ''',
-                               (usuario, password_hash, self.getFecha(), id_rol, id_empresa, id_usuario))
+                               (usuario, password_hash, self.getFecha(), id_role, id_empresa, id_usuario))
             mysql.connection.commit()
             return True
         except Exception as err:
@@ -205,7 +206,7 @@ class Usuario:
                 WHERE us.estado = %s and rol.id_rol = %s and em.id_empresa = %s
                 order by us.id_usuario desc LIMIT 1
                 '''
-        params = ('0', self.id_rol, self.id)
+        params = ('0', self.id_role, self.id)
         return self.execute_query(query, params=params)
     
     def get_empleados_empresa(self):

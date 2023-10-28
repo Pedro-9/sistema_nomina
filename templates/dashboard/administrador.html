@@ -7,9 +7,12 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+
 </head>
 
 <body>
+
+
   <main class="main">
     <header class="header">
       <div class="logo">
@@ -20,7 +23,7 @@
       <nav class="navegation">
         <ul>
           <li style="--i: #56ccf2; --j:#2f80ed;">
-            <a href="/dashboard_empresa">
+            <a href="/dashboard">
               <span class="icon"><ion-icon name="home-outline"></ion-icon>
               </span>
               <span class="title">Home</span>
@@ -48,14 +51,11 @@
     <div class="body">
       <section class="panel ">
         <ul>
+          <li><a href="/show_companies">Empresa</a></li>
           <li><a href="/show_employee">Empleado</a></li>
           <li><a href="/show_users">Usuarios</a></li>
-          <li><a href="/show_user_nominass">Horas</a></li>
-          <li><a href="/show_user_prestamos">Prestamos</a></li>
-          <li><a href="/show_user_anticipos">Anticipo</a></li>
-          <li><a href="/show_user_nomina">Nomina</a></li>
-          <li><a href="/show_departments">Departamentos</a></li>
-                  </ul>
+          <li><a href="/show_roles">Roles</a></li>
+        </ul>
       </section>
       
       {% block body %}
@@ -88,10 +88,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
 </body>
 
 </html>
