@@ -222,3 +222,13 @@ def getEmpleadosEmpresa():
         return jsonify({"empleados": row})
     else:
         return jsonify({"mensaje": "No existe empleados"})
+    
+
+@usuario.route('/nominas')
+@login_required
+def getNominas():
+    nominas_data = user.get_nomina_data()
+    if nominas_data != None:
+        return jsonify({"nominas": nominas_data})
+    else:
+        return jsonify({"mensaje": "No existen nominas"})

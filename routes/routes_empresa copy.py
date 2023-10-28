@@ -110,14 +110,14 @@ def mostrar_usuarios_empresa():
 
 
 
-@empresas.route('/nominas')
-@login_required
-def getNominas():
-    nominas_data = user.get_nomina_data()
-    if nominas_data is not None:
-        return jsonify({"nominas": nominas_data})
-    else:
-        return jsonify({"mensaje": "No existen nóminas"})
+# @empresas.route('/nominas')
+# @login_required
+# def getNominas():
+#     nominas_data = user.get_nomina_data()
+#     if nominas_data is not None:
+#         return jsonify({"nominas": nominas_data})
+#     else:
+#         return jsonify({"mensaje": "No existen nóminas"})
 
 
 @empresas.route('/show_user_nomina')
