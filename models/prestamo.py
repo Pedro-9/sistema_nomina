@@ -35,7 +35,8 @@ class Prestamo:
             return False
 
     def get_prestamos(self):
-        query = '''SELECT p.id_prestamo, u.usuario as id_usuario_solicita, p.fecha_atencion, p.descripcion, p.plazo_meses, p.monto
+        query = '''SELECT p.id_prestamo, u.usuario as id_usuario_solicita, p.fecha_atencion, p.descripcion, p.plazo_meses, 
+        ROUND((p.monto / p.plazo_meses),2) as pago_mensual,p.monto
                     FROM prestamos p
                     INNER JOIN usuarios u ON p.id_usuario_solicita = u.id_usuario'''
         return self.execute_query(query, fetchall=True)
@@ -45,12 +46,12 @@ class Prestamo:
         params = (id_prestamo,)
         return self.execute_query(query, params=params)
     
-    def insert_prestamo(self, fecha_atencion, descripcion, plazo_meses, monto, estado, id_usuario_solicita, id_usuario_atiende):
+    def insert_prestamo(self, fecha_atencion, descripcion, plazo_meses, monto, id_usuario_solicita, id_usuario_atiende):
         query = '''
         INSERT INTO prestamos (fecha_atencion, descripcion, plazo_meses, monto, estado, id_usuario_solicita, id_usuario_atiende)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, 0, %s, %s)
         '''
-        params = (fecha_atencion, descripcion, plazo_meses, monto, estado, id_usuario_solicita, id_usuario_atiende)
+        params = (fecha_atencion, descripcion, plazo_meses, monto, id_usuario_solicita, id_usuario_atiende)
         return self.execute_commit(query, params)
 
     

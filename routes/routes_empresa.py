@@ -114,10 +114,10 @@ def mostrar_usuarios_empresa():
 # @login_required
 # def getNominas():
 #     nominas_data = user.get_nomina_data()
-#     if nominas_data != None:
+#     if nominas_data is not None:
 #         return jsonify({"nominas": nominas_data})
 #     else:
-#         return jsonify({"mensaje": "No existen nominas"})
+#         return jsonify({"mensaje": "No existen nóminas"})
 
 
 @empresas.route('/show_user_nomina')
@@ -172,7 +172,7 @@ def insertPrestamo():
 @login_required
 def getAnticipos():
     anticipos = anticipo.get_anticipos()
-    if anticipos != None:
+    if anticipos is not None:
         return jsonify({"anticipos": anticipos})
     else:
         return jsonify({"mensaje": "No existen anticipos"})
@@ -238,11 +238,11 @@ def insertNomina():
         bonificacion = request.json['bonificacion']
         estado = request.json['estado']
 
-        
-        response = nominass.insert_nomina(
-            id_empleado, fecha, horas_trabajadas, ausencia_dias, horas_extra, comisiones, bonificacion, '0')
-        if response:
-            Logger.add_to_log("info", "Nómina agregada exitosamente")
-            return jsonify({"mensaje": "Nómina agregada exitosamente"})
-        else:
+        try:
+            response = nominass.insert_nomina(
+                id_empleado, fecha, horas_trabajadas, ausencia_dias, horas_extra, comisiones, bonificacion, estado)
+            if response:
+                Logger.add_to_log("info", "Nómina agregada exitosamente")
+                return jsonify({"mensaje": "Nómina agregada exitosamente"})
+        except Exception as e:
             return jsonify({"mensaje": "Error al agregar nómina"})

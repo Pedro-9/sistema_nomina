@@ -40,12 +40,12 @@ class Anticipo:
                         INNER JOIN usuarios u ON a.id_usuario = u.id_usuario'''
             return self.execute_query(query, fetchall=True)
         
-    def insert_anticipo(self, fecha_atencion, fecha_pago, descripcion, monto, estado, id_usuario):
+    def insert_anticipo(self, fecha_atencion, fecha_pago, descripcion, id_usuario):
         query = '''
-            INSERT INTO anticipos (fecha_atencion, fecha_pago, descripcion, monto, estado, id_usuario)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO anticipos (fecha_atencion, fecha_pago, descripcion, estado, id_usuario)
+            VALUES (%s, %s, %s, 0, %s)
             '''
-        params = (fecha_atencion, fecha_pago, descripcion, monto, estado, id_usuario)
+        params = (fecha_atencion, fecha_pago, descripcion, id_usuario)
         return self.execute_commit(query, params)
 
     
