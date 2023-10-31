@@ -35,15 +35,15 @@ class Nominass:
             return False
 
     def get_nominas(self):
-        query = '''SELECT n.id_nomina, concat(e.nombre, ' ', e.apellido) as id_empleado, n.fecha, n.horas_trabajadas, n.ausencia_dias, n.horas_extra, n.comisiones, n.bonificaciones
+        query = ''' SELECT n.id_nomina, concat(e.nombre, ' ', e.apellido) as id_empleado, n.fecha, n.       horas_trabajadas, n.horas_extra, n.ausencia_dias,  n.dias, n.venta_total, n.comisiones, n.bonificaciones
                     FROM nominas n 
                     INNER JOIN empleados e ON n.id_empleado = e.id_empleado'''
         return self.execute_query(query, fetchall=True)
 
-    def insert_nomina(self, id_empleado, fecha, horas_trabajadas, ausencia_dias, horas_extra, comisiones, bonificacion, estado):
+    def insert_nomina(self, id_empleado, fecha, ausencia_dias, horas_extra, venta_total):
         query = '''
-            INSERT INTO nominas (id_empleado, fecha, horas_trabajadas, ausencia_dias, horas_extra, comisiones, bonificaciones, estado)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO nominas (id_empleado, fecha, ausencia_dias, horas_extra, venta_total, estado)
+            VALUES (%s, %s, %s, %s, %s, 0)
         '''
-        params = (id_empleado, fecha, horas_trabajadas, ausencia_dias, horas_extra, comisiones, bonificacion, estado)
+        params = (id_empleado, fecha, ausencia_dias, horas_extra, venta_total)
         return self.execute_commit(query, params)

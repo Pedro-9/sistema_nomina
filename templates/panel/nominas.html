@@ -29,18 +29,12 @@
                     <input type="text" class="form-control" id="id_empleado_nomina" name="id_empleado_nomina" required>
                     <label for="fecha_nomina">Fecha:</label>
                     <input type="date" class="form-control" id="fecha_nomina" name="fecha_nomina" required>
-                    <label for="horas_trabajadas">Horas Trabajadas:</label>
-                    <input type="text" class="form-control" id="horas_trabajadas" name="horas_trabajadas" required>
                     <label for="ausencia_dias">Ausencia Días:</label>
                     <input type="text" class="form-control" id="ausencia_dias" name="ausencia_dias" required>
                     <label for="horas_extra">Horas Extra:</label>
                     <input type="text" class="form-control" id="horas_extra" name="horas_extra" required>
-                    <label for="comisiones">Comisiones:</label>
-                    <input type="text" class="form-control" id="comisiones" name="comisiones" required>
-                    <label for="bonificacion">Bonificación:</label>
-                    <input type="text" class="form-control" id="bonificacion" name="bonificacion" required>
-                    <label for="estado_nomina">Estado:</label>
-                    <input type="text" class="form-control" id="estado_nomina" name="estado_nomina" required>
+                    <label for="venta_total">Venta</label>
+                    <input type="text" class="form-control" id="venta_total" name="venta_total" required>
                 </form>
             </div>
             <!-- Modal footer -->
@@ -64,8 +58,10 @@
                 <th>Empleado</th>
                 <th>Fecha</th>
                 <th>Horas Trabajadas</th>
-                <th>Ausencia</th>
                 <th>Horas_extra</th>
+                <th>Dias Ausencia</th>
+                <th>Dias Trabajadas</th>
+                <th>Venta Total</th>
                 <th>Comisiones</th>
                 <th>Bonificacion</th>
             </tr>
@@ -74,6 +70,8 @@
             <!-- Aquí se insertarán los registros dinámicamente -->
         </tbody>
     </table>
+    <button class="btns" id="regresarNominass" onclick="regresarNominass()">Regresar</button>
+    <button class="btns" id="mostrarMasNominass" onclick="mostrarMasNominass()">Mostrar Más</button>
 </section>
 
 {% endblock %}

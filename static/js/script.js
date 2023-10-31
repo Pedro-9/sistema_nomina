@@ -5,6 +5,7 @@ let pagina_rol = 1;
 let pagina_empleado = 1;
 let pag_empl_empre = 1;
 let pagina_nomina = 1;
+let pagina_nominass = 1;
 let pagina_prestamo = 1;
 const registrosPorPagina = 10;
 const row_empresa = 10;
@@ -1087,7 +1088,6 @@ function get_puestos(tipo_select) {
 // ---------------------------------------------------
 
 
-
 function get_nominas() {
     fetch('/nominas', { method: 'GET' })
         .then(response => response.json())
@@ -1095,6 +1095,17 @@ function get_nominas() {
         .catch(error => console.log(error))
 }
 
+function mostrarMasNomina() {
+    pagina_nomina++;
+    get_nominas();
+}
+
+function regresarNomina() {
+    if (pagina_nomina > 1) {
+        pagina_nomina--;
+        get_nominas();
+    }
+}
 
 function mostrarDataNominas(data) {
     data = data.nominas;
@@ -1153,6 +1164,7 @@ function mostrarDataPrestamos(data) {
                     <td>${data[i].fecha_atencion}</td>
                     <td>${data[i].descripcion}</td>
                     <td>${data[i].plazo_meses}</td>
+                    <td>${data[i].pago_mensual}</td>
                     <td>${data[i].monto}</td>
                 </tr>`;
     }
@@ -1165,11 +1177,10 @@ function add_prestamo() {
     const descripcion = document.getElementById('descripcion').value;
     const plazo_meses = document.getElementById('plazo_meses').value;
     const monto = document.getElementById('monto').value;
-    const estado = document.getElementById('estado').value;
     const id_usuario_solicita = document.getElementById('id_usuario_solicita').value;
     const id_usuario_atiende = document.getElementById('id_usuario_atiende').value;
 
-    if (!fecha_atencion || !descripcion || !plazo_meses || !monto || !estado || !id_usuario_solicita || !id_usuario_atiende) {
+    if (!fecha_atencion || !descripcion || !plazo_meses || !monto || !id_usuario_solicita || !id_usuario_atiende) {
         alert("Por favor, complete todos los campos.");
         return;
     }
@@ -1179,7 +1190,6 @@ function add_prestamo() {
         descripcion,
         plazo_meses,
         monto,
-        estado,
         id_usuario_solicita,
         id_usuario_atiende
     };
@@ -1233,11 +1243,9 @@ function add_anticipo() {
     const fecha_atencion = document.getElementById('fecha_atencion_anticipo').value;
     const fecha_pago = document.getElementById('fecha_pago').value;
     const descripcion = document.getElementById('descripcion_anticipo').value;
-    const monto = document.getElementById('monto_anticipo').value;
-    const estado = document.getElementById('estado_anticipo').value;
     const id_usuario = document.getElementById('id_usuario_anticipo').value;
 
-    if (!fecha_atencion || !fecha_pago || !descripcion || !monto || !estado || !id_usuario) {
+    if (!fecha_atencion || !fecha_pago || !descripcion || !id_usuario) {
         alert("Por favor, complete todos los campos.");
         return;
     }
@@ -1246,8 +1254,6 @@ function add_anticipo() {
         fecha_atencion,
         fecha_pago,
         descripcion,
-        monto,
-        estado,
         id_usuario
     };
 
@@ -1279,6 +1285,19 @@ function get_nominasss() {
         .catch(error => console.log(error))
 }
 
+
+function mostrarMasNominass() {
+    pagina_nominass++;
+    get_nominass();
+}
+
+function regresarNominass() {
+    if (pagina_nominass > 1) {
+        pagina_nominass--;
+        get_nominass();
+    }
+}
+
 function mostrarDataNominasss(data) {
     data = data.nominas;
     let body = "";
@@ -1288,8 +1307,10 @@ function mostrarDataNominasss(data) {
                     <td>${data[i].id_empleado}</td>
                     <td>${data[i].fecha}</td>
                     <td>${data[i].horas_trabajadas}</td>
-                    <td>${data[i].ausencia_dias}</td>
                     <td>${data[i].horas_extra}</td>
+                    <td>${data[i].ausencia_dias}</td>
+                    <td>${data[i].dias}</td>
+                    <td>${data[i].venta_total}</td>
                     <td>${data[i].comisiones}</td>
                     <td>${data[i].bonificaciones}</td>
                 </tr>`;
@@ -1300,14 +1321,12 @@ function mostrarDataNominasss(data) {
 function add_nomina() {
     const id_empleado = document.getElementById('id_empleado_nomina').value;
     const fecha = document.getElementById('fecha_nomina').value;
-    const horas_trabajadas = document.getElementById('horas_trabajadas').value;
     const ausencia_dias = document.getElementById('ausencia_dias').value;
     const horas_extra = document.getElementById('horas_extra').value;
-    const comisiones = document.getElementById('comisiones').value;
-    const bonificacion = document.getElementById('bonificacion').value;
-    const estado = document.getElementById('estado_nomina').value;
+    const venta_total = document.getElementById('venta_total').value;
 
-    if (!id_empleado || !fecha || !horas_trabajadas || !ausencia_dias || !horas_extra || !comisiones || !bonificacion || !estado) {
+
+    if (!id_empleado || !fecha || !ausencia_dias || !horas_extra || !venta_total ) {
         alert("Por favor, complete todos los campos.");
         return;
     }
@@ -1315,12 +1334,9 @@ function add_nomina() {
     const body = {
         id_empleado,
         fecha,
-        horas_trabajadas,
         ausencia_dias,
         horas_extra,
-        comisiones,
-        bonificacion,
-        estado
+        venta_total
     };
 
     const header = { "Content-Type": "application/json" };
